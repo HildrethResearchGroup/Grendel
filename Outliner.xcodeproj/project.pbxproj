@@ -17,6 +17,8 @@
 		3FDF3CDE265C406E00AA2214 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3CB1265C406D00AA2214 /* ContentView.swift */; };
 		3FDF3CDF265C406E00AA2214 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FDF3CB2265C406E00AA2214 /* Assets.xcassets */; };
 		3FDF3CE0265C406E00AA2214 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FDF3CB2265C406E00AA2214 /* Assets.xcassets */; };
+		3FDF3CF0265C41A400AA2214 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3CEF265C41A400AA2214 /* Node.swift */; };
+		3FDF3CF1265C41A400AA2214 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3CEF265C41A400AA2214 /* Node.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,7 @@
 		3FDF3CD2265C406E00AA2214 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FDF3CD6265C406E00AA2214 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		3FDF3CD8265C406E00AA2214 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3FDF3CEF265C41A400AA2214 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +107,7 @@
 				3FDF3CAF265C406D00AA2214 /* OutlinerApp.swift */,
 				3FDF3CB0265C406D00AA2214 /* OutlinerDocument.swift */,
 				3FDF3CB1265C406D00AA2214 /* ContentView.swift */,
+				3FDF3CEF265C41A400AA2214 /* Node.swift */,
 				3FDF3CB2265C406E00AA2214 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -315,6 +319,7 @@
 				3FDF3CDB265C406E00AA2214 /* OutlinerDocument.swift in Sources */,
 				3FDF3CD9265C406E00AA2214 /* OutlinerApp.swift in Sources */,
 				3FDF3CDD265C406E00AA2214 /* ContentView.swift in Sources */,
+				3FDF3CF0265C41A400AA2214 /* Node.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,6 +330,7 @@
 				3FDF3CDC265C406E00AA2214 /* OutlinerDocument.swift in Sources */,
 				3FDF3CDA265C406E00AA2214 /* OutlinerApp.swift in Sources */,
 				3FDF3CDE265C406E00AA2214 /* ContentView.swift in Sources */,
+				3FDF3CF1265C41A400AA2214 /* Node.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
