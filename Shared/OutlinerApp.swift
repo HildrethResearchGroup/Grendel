@@ -13,5 +13,6 @@ struct OutlinerApp: App {
         DocumentGroup(newDocument: OutlinerDocument()) { file in
             ContentView(document: file.$document)
         }
+        .windowToolbarStyle(UnifiedWindowToolbarStyle(showsTitle: false))
     }
 }
