@@ -12,6 +12,14 @@ class Node: Identifiable {
     private(set) var parent: Node? = nil
     let id = UUID()
     private(set) var selected: Bool = false
+    var depth: Int {
+        switch parent {
+        case nil:
+            return 0
+        default:
+            return parent!.depth + 1
+        }
+    }
     
     init() {}
     

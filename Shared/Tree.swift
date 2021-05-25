@@ -10,6 +10,7 @@ import Foundation
 struct Tree {
     // The root node is used as a container for other nodes only, it contains no data, is not rendered,
     var rootNode = Node()
+    var selectedLevel: Int? = nil
     
     // MARK: modifications
     // Move a node to being a child of the node above it in its subtree
