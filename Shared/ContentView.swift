@@ -15,18 +15,25 @@ struct ContentView: View {
     @Binding var document: OutlinerDocument
     
     var body: some View {
-        TextEditor(text: $document.text)
+        Text("Tree goes here")
+            .font(.title)
+            .frame(minWidth: 400, idealWidth: 600, maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, minHeight: 300, idealHeight: 400, maxHeight: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
             .toolbar(content: {
                 // main buttons to modify the model
-                // FIXME: find a better way to align icons?
                 HStack(alignment: .bottom) {
                     ActionButton(imageName: "text.badge.minus", label: "Delete item(s)", customAction: customAction)
+                        .keyboardShortcut(.delete, modifiers: [])
                     ActionButton(imageName: "text.badge.plus", label: "Add item", customAction: customAction)
+                        .keyboardShortcut(.return, modifiers: [])
                     ActionButton(imageName: "text.badge.star", label: "Add child", customAction: customAction)
+                        .keyboardShortcut(.return, modifiers: [.shift])
                     ActionButton(imageName: "arrow.right.to.line", label: "Indent", customAction: customAction)
+                        .keyboardShortcut(.tab, modifiers: [])
                     ActionButton(imageName: "arrow.left.to.line", label: "Outdent", customAction: customAction)
+                        .keyboardShortcut(.tab, modifiers: [.shift])
                 }
             })
+            .focusable()
     }
 }
 
@@ -37,14 +44,10 @@ struct ActionButton: View {
 
     var body: some View {
         Button(action: customAction, label: {
-            VStack(spacing: 5) {
-                Image(systemName: imageName)
-                    .font(.body)
-                Text(label)
-                    .font(.body)
-            }
-            .frame(minWidth: 15, idealWidth: 64, maxWidth: 64, minHeight: 15, idealHeight: 40, maxHeight: 40)
-        }).buttonStyle(PlainButtonStyle())
+            Image(systemName: imageName)
+                .font(.title)
+        })
+        .help(label)
     }
 }
 
