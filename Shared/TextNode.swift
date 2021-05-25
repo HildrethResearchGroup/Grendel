@@ -2,7 +2,7 @@
 //  TextNode.swift
 //  Outliner
 //
-//  Created by Mines CS Field Session Student on 5/24/21.
+//  Created by Emily Hepperlen on 5/24/21.
 //
 
 import Foundation

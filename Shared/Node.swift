@@ -25,27 +25,13 @@ class Node: Identifiable {
     
     // MARK: modify node
     func insertChild(child: Node, at insertIndex: Int) {
-        switch children {
-        case nil:
-            if(insertIndex != 0) {
-                // TODO: maybe produce an error
-            }
-            children = [child]
-        default:
-            children.insert(child, at: insertIndex)
-        }
+        children.insert(child, at: insertIndex)
         child.parent = self
     }
     
     func removeChild(child: Node) {
-        switch children {
-        case nil:
-            // TODO: maybe produce an error
-            print("Error no children to remove from")
-        default:
-            let indexToRemove = indexOfChild(child)
-            children.remove(at: indexToRemove!)
-        }
+        let indexToRemove = indexOfChild(child)
+        children.remove(at: indexToRemove!)
         child.parent = nil
     }
     
