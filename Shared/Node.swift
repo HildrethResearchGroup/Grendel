@@ -8,23 +8,47 @@
 import Foundation
 
 class Node: Identifiable {
-    var text: String = ""
-    var children: [Node]? = nil
-    var parent: Node? = nil
+    private(set) var children: [Node]? = nil
+    private(set) var parent: Node? = nil
     let id = UUID()
-    // TODO: where/how should this be put?
-    //var fontSettings = FontSettings()
+    private(set) var selected: Bool = false
     
-    init(text: String) {
-        self.text = text
+    init() {}
+    
+    // MARK: modify node
+    func insertChild(child: Node, at insertIndex: Int) {
+        switch children {
+        case nil:
+            if(insertIndex != 0) {
+                // TODO: maybe produce an error
+            }
+            children = [child]
+        default:
+            children!.insert(child, at: insertIndex)
+        }
+        child.parent = self
+    }
+    
+    func removeChild(child: Node) {
+        switch children {
+        case nil:
+            // TODO: maybe produce an error
+            print("Error no children to remove from")
+        default:
+            let indexToRemove = indexOfChild(child)
+            children!.remove(at: indexToRemove!)
+        }
+        child.parent = nil
+    }
+    
+    func copy() -> Node {
+        return Node()
+    }
+    
+    
+    
+    // MARK: info in node
+    func indexOfChild(_ child: Node) -> Int? {
+        return children!.firstIndex(where: {$0.id == id})
     }
 }
-
-// TODO: where/how should this be put?
-/*struct FontSettings {
-    var isBold: Bool = false
-    var isItalic: Bool = false
-    var fontColor: String? = nil
-    var fontFamily: String? = nil
-    var fontSize: Int? = nil
-}*/
