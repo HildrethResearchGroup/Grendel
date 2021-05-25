@@ -8,7 +8,7 @@
 import Foundation
 
 class Node: Identifiable {
-    private(set) var children: [Node]? = nil
+    private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
     private(set) var selected: Bool = false
@@ -24,7 +24,7 @@ class Node: Identifiable {
             }
             children = [child]
         default:
-            children!.insert(child, at: insertIndex)
+            children.insert(child, at: insertIndex)
         }
         child.parent = self
     }
@@ -36,7 +36,7 @@ class Node: Identifiable {
             print("Error no children to remove from")
         default:
             let indexToRemove = indexOfChild(child)
-            children!.remove(at: indexToRemove!)
+            children.remove(at: indexToRemove!)
         }
         child.parent = nil
     }
@@ -49,6 +49,6 @@ class Node: Identifiable {
     
     // MARK: info in node
     func indexOfChild(_ child: Node) -> Int? {
-        return children!.firstIndex(where: {$0.id == id})
+        return children.firstIndex(where: {$0.id == id})
     }
 }

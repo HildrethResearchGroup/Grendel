@@ -21,15 +21,9 @@ struct Tree {
             // TODO: alert of unable to indent
         } else {
             // Store the node above it
-            let newParent = node.parent!.children![nodesIndex! - 1]
+            let newParent = node.parent!.children[nodesIndex! - 1]
             // Move to the end of the list of children of the node above it
-            switch newParent.children {
-            case nil:
-                move(node, toParent: newParent, at: 0)
-            default:
-                move(node, toParent: newParent, at: newParent.children!.endIndex)
-            }
-            
+            move(node, toParent: newParent, at: newParent.children.endIndex)
         }
     }
     
@@ -56,29 +50,19 @@ struct Tree {
         }
         
         // Add the relationship to the new parent
-        switch newParent.children {
-        case nil:
-            newParent.insertChild(child: node, at: 0)
-        default:
-            newParent.insertChild(child: node, at: index)
-        }
+        newParent.insertChild(child: node, at: index)
     }
     
     // Creates a copy of a node, and copies all of its children and
     func copySubtree(rootOfSubtree: Node) -> Node{
         // Create a copy of the root of the current subtree
         let copyOfRootOfSubtree = rootOfSubtree.copy()
-        // If the current subtree has children
-        if(rootOfSubtree.children != nil) {
-            // Loop through each child of the current subtree
-            var insertIndex = 0
-            rootOfSubtree.children!.forEach { childNode in
-                // Use a copy of each child of the subtree as the root of a new subtree to copy
-                let copyOfChildNode = copySubtree(rootOfSubtree: childNode.copy())
-                // Add the complete copy subtree of the copy of the child to the copy of the current subtree
-                copyOfRootOfSubtree.insertChild(child: copyOfChildNode, at: insertIndex)
-                insertIndex = copyOfRootOfSubtree.children!.endIndex
-            }
+        // Loop through each child of the current subtree
+        rootOfSubtree.children.forEach { childNode in
+            // Use a copy of each child of the subtree as the root of a new subtree to copy
+            let copyOfChildNode = copySubtree(rootOfSubtree: childNode.copy())
+            // Add the complete copy subtree of the copy of the child to the copy of the current subtree
+            copyOfRootOfSubtree.insertChild(child: copyOfChildNode, at: copyOfRootOfSubtree.children.endIndex)
         }
         // Return the copy of the current subtree
         return copyOfRootOfSubtree
