@@ -9,31 +9,29 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 extension UTType {
-    static var exampleText: UTType {
-        UTType(importedAs: "com.example.plain-text")
+    static var treeType: UTType {
+        UTType(importedAs: "com.HRG.Outliner.tree")
     }
 }
 
 struct OutlinerDocument: FileDocument {
-    var text: String
+    var tree: Tree
 
-    init(text: String = "Hello, world!") {
-        self.text = text
+    init() {
+        tree = Tree()
     }
 
-    static var readableContentTypes: [UTType] { [.exampleText] }
+    static var readableContentTypes: [UTType] { [.treeType] }
 
     init(configuration: ReadConfiguration) throws {
-        guard let data = configuration.file.regularFileContents,
-              let string = String(data: data, encoding: .utf8)
-        else {
-            throw CocoaError(.fileReadCorruptFile)
+        guard let data = configuration.file.regularFileContents else {
+          throw CocoaError(.fileReadCorruptFile)
         }
-        text = string
+        tree = try JSONDecoder().decode(Tree.self, from: data)
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = text.data(using: .utf8)!
+        let data = try JSONEncoder().encode(tree)
         return .init(regularFileWithContents: data)
     }
 }

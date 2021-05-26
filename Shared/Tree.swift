@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Tree {
+struct Tree: Codable {
     // The root node is used as a container for other nodes only, it contains no data, is not rendered,
     var rootNode = Node()
     var selectedLevel: Int? = nil

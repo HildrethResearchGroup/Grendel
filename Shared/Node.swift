@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Node: Identifiable {
+class Node: Identifiable, Codable {
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
