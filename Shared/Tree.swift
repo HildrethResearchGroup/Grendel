@@ -9,12 +9,12 @@ import Foundation
 
 struct Tree: Codable {
     // The root node is used as a container for other nodes only, it contains no data, is not rendered,
-    var rootNode = Node()
+    var rootNode = Node<String>(content: "")
     var selectedLevel: Int? = nil
     
     // MARK: modifications
     // Move a node to being a child of the node above it in its subtree
-    func indent(node: Node) {
+    func indent(node: Node<String>) {
         let nodesIndex = node.parent!.indexOfChild(node)
         // If there isn't a node above the this node then indenting can't happen
         if(nodesIndex! == 0) {
@@ -29,7 +29,7 @@ struct Tree: Codable {
     }
     
     // Move a node to be under its parent node
-    func outdent(node: Node) {
+    func outdent(node: Node<String>) {
         switch node.parent!.parent { // Can print an error only if the root node is being modified, which can't happen
         case nil:
             // TODO: alert of incorrent outdent
@@ -44,7 +44,7 @@ struct Tree: Codable {
     }
     
     // Move a node from one parent to another, breaking the relationship between its current parent and making one with the new parent
-    func move(_ node: Node, toParent newParent: Node, at index: Int) {
+    func move(_ node: Node<String>, toParent newParent: Node<String>, at index: Int) {
         // Remove relationship to old parent
         if(node.parent != nil) {
             node.parent!.removeChild(child: node)
@@ -55,7 +55,7 @@ struct Tree: Codable {
     }
     
     // Creates a copy of a node, and copies all of its children and
-    func copySubtree(rootOfSubtree: Node) -> Node{
+    func copySubtree(rootOfSubtree: Node<String>) -> Node<String> {
         // Create a copy of the root of the current subtree
         let copyOfRootOfSubtree = rootOfSubtree.copy()
         // Loop through each child of the current subtree

@@ -7,7 +7,8 @@
 
 import Foundation
 
-class Node: Identifiable, Codable {
+class Node<Content: Codable>: Identifiable, Codable {
+    var content: Content
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
@@ -21,7 +22,9 @@ class Node: Identifiable, Codable {
         }
     }
     
-    init() {}
+    init(content: Content) {
+        self.content = content
+    }
     
     // MARK: modify node
     func insertChild(child: Node, at insertIndex: Int) {
@@ -36,7 +39,7 @@ class Node: Identifiable, Codable {
     }
     
     func copy() -> Node {
-        return Node()
+        return Node(content: content)
     }
     
     
@@ -49,19 +52,28 @@ class Node: Identifiable, Codable {
     // MARK: JSON encoding
     private enum CodingKeys : String, CodingKey {
         case children
-        case parent
+        case content
+        //case parent
     }
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         children = try container.decode(Array<Node>.self, forKey: .children)
-        parent = try container.decode(Node.self, forKey: .parent)
+        content = try container.decode(Content.self, forKey: .content)
+        for child in children {
+            child.parent = self
+        }
         selected = false
     }
     
     func encode(to encoder: Encoder) throws {
+        print(depth)
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(children, forKey: .children)
-        try container.encode(parent, forKey: .parent)
+        try container.encode(content, forKey: .content)
     }
+}
+
+extension Node where Content == String {
+    
 }
