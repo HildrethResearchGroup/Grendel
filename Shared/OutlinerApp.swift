@@ -13,5 +13,44 @@ struct OutlinerApp: App {
         DocumentGroup(newDocument: OutlinerDocument()) { file in
             ContentView(document: file.$document)
         }
+        .windowToolbarStyle(UnifiedWindowToolbarStyle(showsTitle: false))
+        .commands{
+            CommandMenu("Editor"){
+                Button("Delete"){
+                    deleteAction()
+                }.keyboardShortcut(.delete, modifiers: [.shift])
+                Button("Add Item"){
+                    addItemAction()
+                }.keyboardShortcut(.return, modifiers: [])
+                Button("Add Child"){
+                    addChildAction()
+                }.keyboardShortcut(.return, modifiers: [.shift])
+                Button("Indent"){
+                    indentAction()
+                }.keyboardShortcut(.tab, modifiers: [])
+                Button("Outdent"){
+                    outdentAction()
+                }.keyboardShortcut(.tab, modifiers: [.shift])
+            }
+            CommandMenu("Node"){
+                Button("Edit Node"){
+                    editAction()
+                }
+                Button("Toggle Children"){
+                    toggleAction()
+                }
+                Button("Label"){
+                    labelAction()
+                }
+            }
+            CommandMenu("Text"){
+                Button("Colors"){
+                    colorAction()
+                }
+                Button("Font"){
+                    fontAction()
+                }
+            }
+        }
     }
 }
