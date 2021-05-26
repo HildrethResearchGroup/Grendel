@@ -80,11 +80,8 @@ struct ContentView: View {
                 HStack(alignment: .bottom){
                     
                     ActionButton(imageName: "pencil", label: "Edit Note", customAction: editAction)
-                        .keyboardShortcut(.return, modifiers: [.shift])
                     ActionButton(imageName: "eye", label: "Toggle Children", customAction: toggleAction)
-                        .keyboardShortcut(.tab, modifiers: [])
                     ActionButton(imageName: "eyedropper", label: "Label", customAction: labelAction)
-                        .keyboardShortcut(.tab, modifiers: [.shift])
 
                     
                 }
@@ -94,9 +91,7 @@ struct ContentView: View {
                 HStack(alignment: .bottom){
                     
                     ActionButton(imageName: "paintbrush.fill", label: "Colors", customAction: colorAction)
-                        .keyboardShortcut(.return, modifiers: [.shift])
                     ActionButton(imageName: "character", label: "Font", customAction: fontAction)
-                        .keyboardShortcut(.tab, modifiers: [])
 
                     
                 }
