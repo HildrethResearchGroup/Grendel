@@ -18,19 +18,19 @@ struct OutlinerApp: App {
             CommandMenu("Editor"){
                 Button("Delete"){
                     deleteAction()
-                }
+                }.keyboardShortcut(.delete, modifiers: [.shift])
                 Button("Add Item"){
                     addItemAction()
-                }
+                }.keyboardShortcut(.return, modifiers: [])
                 Button("Add Child"){
                     addChildAction()
-                }
+                }.keyboardShortcut(.return, modifiers: [.shift])
                 Button("Indent"){
                     indentAction()
-                }
+                }.keyboardShortcut(.tab, modifiers: [])
                 Button("Outdent"){
                     outdentAction()
-                }
+                }.keyboardShortcut(.tab, modifiers: [.shift])
             }
             CommandMenu("Node"){
                 Button("Edit Node"){

@@ -68,15 +68,15 @@ struct Toolbar: View {
         //FIXME: Enter doesn't work in full screen
         HStack(alignment: .center) {
             ActionButton(imageName: "text.badge.minus", label: "Delete item(s)", customAction: deleteAction)
-                .keyboardShortcut(.delete, modifiers: [.shift])
+            .keyboardShortcut(.delete, modifiers: [.shift])
             ActionButton(imageName: "text.badge.plus", label: "Add item", customAction: addItemAction)
-                .keyboardShortcut(.return, modifiers: [])
+            .keyboardShortcut(.return, modifiers: [])
             ActionButton(imageName: "text.badge.star", label: "Add child", customAction: addChildAction)
-                .keyboardShortcut(.return, modifiers: [.shift])
+            .keyboardShortcut(.return, modifiers: [.shift])
             ActionButton(imageName: "arrow.right.to.line", label: "Indent", customAction: indentAction)
-                .keyboardShortcut(.tab, modifiers: [])
+            .keyboardShortcut(.tab, modifiers: [])
             ActionButton(imageName: "arrow.left.to.line", label: "Outdent", customAction: outdentAction)
-                .keyboardShortcut(.tab, modifiers: [.shift])
+            .keyboardShortcut(.tab, modifiers: [.shift])
         }
         Spacer()
         HStack(alignment: .bottom){
