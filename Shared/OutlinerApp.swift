@@ -14,5 +14,43 @@ struct OutlinerApp: App {
             ContentView(document: file.$document)
         }
         .windowToolbarStyle(UnifiedWindowToolbarStyle(showsTitle: false))
+        .commands{
+            CommandMenu("Editor"){
+                Button("Delete"){
+                    deleteAction()
+                }
+                Button("Add Item"){
+                    addItemAction()
+                }
+                Button("Add Child"){
+                    addChildAction()
+                }
+                Button("Indent"){
+                    indentAction()
+                }
+                Button("Outdent"){
+                    outdentAction()
+                }
+            }
+            CommandMenu("Node"){
+                Button("Edit Node"){
+                    editAction()
+                }
+                Button("Toggle Children"){
+                    toggleAction()
+                }
+                Button("Label"){
+                    labelAction()
+                }
+            }
+            CommandMenu("Text"){
+                Button("Colors"){
+                    colorAction()
+                }
+                Button("Font"){
+                    fontAction()
+                }
+            }
+        }
     }
 }
