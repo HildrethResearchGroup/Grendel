@@ -53,7 +53,6 @@ class Node<Content: Codable>: Identifiable, Codable {
     private enum CodingKeys : String, CodingKey {
         case children
         case content
-        //case parent
     }
     
     required init(from decoder: Decoder) throws {
@@ -67,7 +66,6 @@ class Node<Content: Codable>: Identifiable, Codable {
     }
     
     func encode(to encoder: Encoder) throws {
-        print(depth)
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(children, forKey: .children)
         try container.encode(content, forKey: .content)

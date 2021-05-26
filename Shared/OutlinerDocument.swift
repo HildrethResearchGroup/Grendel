@@ -19,8 +19,8 @@ struct OutlinerDocument: FileDocument {
 
     init() {
         tree = Tree()
-        print("Doing Init")
         
+        // TODO: remove below, was test code only
         let nodeA = Node<String>(content: "A")
         tree.move(nodeA, toParent: tree.rootNode, at: 0)
         let nodeAB = Node<String>(content: "AB")
@@ -35,20 +35,6 @@ struct OutlinerDocument: FileDocument {
         tree.move(nodeAA, toParent: nodeA, at: 0)
         let nodeB = Node<String>(content: "B")
         tree.move(nodeB, toParent: tree.rootNode, at: 1)
-        /*let nodeA = Node()
-        tree.move(nodeA, toParent: tree.rootNode, at: 0)
-        let nodeAB = Node()
-        tree.move(nodeAB, toParent: nodeA, at: 0)
-        let nodeABC = Node()
-        tree.move(nodeABC, toParent: nodeAB, at: 0)
-        let nodeAC = Node()
-        tree.move(nodeAC, toParent: nodeA, at: 1)
-        let nodeACD = Node()
-        tree.move(nodeACD, toParent: nodeAC, at: 0)
-        let nodeAA = Node()
-        tree.move(nodeAA, toParent: nodeA, at: 0)
-        let nodeB = Node()
-        tree.move(nodeB, toParent: tree.rootNode, at: 1)*/
 
         let tree2: Tree
         do {
@@ -63,7 +49,6 @@ struct OutlinerDocument: FileDocument {
         } catch {
             print("UH Oh spagettios")
         }
-        print("DOne")
     }
 
     static var readableContentTypes: [UTType] { [.treeType] }
