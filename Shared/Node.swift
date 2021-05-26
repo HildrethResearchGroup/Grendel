@@ -45,4 +45,23 @@ class Node: Identifiable, Codable {
     func indexOfChild(_ child: Node) -> Int? {
         return children.firstIndex(where: {$0.id == id})
     }
+    
+    // MARK: JSON encoding
+    private enum CodingKeys : String, CodingKey {
+        case children
+        case parent
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        children = try container.decode(Array<Node>.self, forKey: .children)
+        parent = try container.decode(Node.self, forKey: .parent)
+        selected = false
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(children, forKey: .children)
+        try container.encode(parent, forKey: .parent)
+    }
 }

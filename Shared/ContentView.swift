@@ -11,7 +11,8 @@ struct ContentView: View {
     @Binding var document: OutlinerDocument
 
     var body: some View {
-        TextEditor(text: $document.text)
+        Text("Hello")
+            .frame(minWidth: 500, idealWidth: 500, maxWidth: 500, minHeight: 500, idealHeight: 500, maxHeight: 500, alignment: .center)
     }
 }
 
