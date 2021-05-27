@@ -67,15 +67,15 @@ struct Toolbar: View {
         // main buttons to modify the model
         //FIXME: Enter doesn't work in full screen
         HStack(alignment: .center) {
-            ActionButton(imageName: "text.badge.minus", label: "Delete item(s)", customAction: deleteAction)
+            ActionButton(imageName: "DeleteItem", label: "Delete item(s)", customAction: deleteAction)
             .keyboardShortcut(.delete, modifiers: [.shift])
-            ActionButton(imageName: "text.badge.plus", label: "Add item", customAction: addItemAction)
+            ActionButton(imageName: "AddItem", label: "Add item", customAction: addItemAction)
             .keyboardShortcut(.return, modifiers: [])
-            ActionButton(imageName: "text.badge.star", label: "Add child", customAction: addChildAction)
+            ActionButton(imageName: "AddChild", label: "Add child", customAction: addChildAction)
             .keyboardShortcut(.return, modifiers: [.shift])
-            ActionButton(imageName: "arrow.right.to.line", label: "Indent", customAction: indentAction)
+            ActionButton(imageName: "Indent", label: "Indent", customAction: indentAction)
             .keyboardShortcut(.tab, modifiers: [])
-            ActionButton(imageName: "arrow.left.to.line", label: "Outdent", customAction: outdentAction)
+            ActionButton(imageName: "Outdent", label: "Outdent", customAction: outdentAction)
             .keyboardShortcut(.tab, modifiers: [.shift])
         }
         Spacer()
@@ -101,8 +101,11 @@ struct ActionButton: View {
     
     var body: some View {
         Button(action: customAction, label: {
-            Image(systemName: imageName)
-                .font(.title)
+            Image(imageName)
+                //.font(.title)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 25.0, height: 25.0)
         })
         .help(label)
     }
