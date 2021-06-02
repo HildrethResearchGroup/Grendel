@@ -64,4 +64,31 @@ struct OutlinerDocument: FileDocument {
         let data = try JSONEncoder().encode(tree)
         return .init(regularFileWithContents: data)
     }
+    
+    func exportToText() throws -> String {
+        var str: String = ""
+        
+        for child in tree.rootNode.children {
+            str += "\n" + generateTreeString(root: child)
+        }
+        
+        return str
+    }
+    
+    func generateTreeString(root: Node<String>) -> String {
+        var temp: String = ""
+        let depth = root.depth
+        
+        for _ in 0..<depth {
+            temp += "   "
+        }
+        
+        temp += root.content
+        
+        for child in root.children {
+            temp += "\n" + generateTreeString(root: child)
+        }
+        
+        return temp
+    }
 }
