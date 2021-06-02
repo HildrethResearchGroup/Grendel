@@ -68,8 +68,9 @@ struct OutlinerDocument: FileDocument {
     func exportToText() throws -> String {
         var str: String = ""
         
+        // starts with children since the root node doesn't have any content
         for child in tree.rootNode.children {
-            str += "\n" + generateTreeString(root: child)
+            str += generateTreeString(root: child)
         }
         
         return str
@@ -79,14 +80,18 @@ struct OutlinerDocument: FileDocument {
         var temp: String = ""
         let depth = root.depth
         
-        for _ in 0..<depth {
-            temp += "   "
+        // add a tab for each layer of depth
+        // we use depth-1 because we are skipping over the parent at depth 0
+        for _ in 0..<depth-1 {
+            temp += "\t"
         }
         
-        temp += root.content
+        // add the content of the current node
+        temp += root.content + "\n"
         
+        // add the content of each child node recursively
         for child in root.children {
-            temp += "\n" + generateTreeString(root: child)
+            temp += generateTreeString(root: child)
         }
         
         return temp
