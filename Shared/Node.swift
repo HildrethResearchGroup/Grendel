@@ -12,7 +12,7 @@ class Node<Content: Codable>: Identifiable, Codable {
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
-    private(set) var selected: Bool = false
+    var selected: Bool = false
     var depth: Int {
         switch parent {
         case nil:
@@ -46,7 +46,12 @@ class Node<Content: Codable>: Identifiable, Codable {
     
     // MARK: info in node
     func indexOfChild(_ child: Node) -> Int? {
-        return children.firstIndex(where: {$0.id == id})
+        for (index, nodesChild) in children.enumerated() {
+            if child.id == nodesChild.id {
+                return index
+            }
+        }
+        return nil
     }
     
     // MARK: JSON encoding
