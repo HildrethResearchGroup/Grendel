@@ -55,7 +55,10 @@ struct OutlinerApp: App {
             }
     }
     
+    // Custom scene that handles the exporting of files and the
+    // addition of the menu buttons to do so
     struct DocumentWindow: Scene {
+        // used as a SwiftUI workaround to access members of the file var
         private let exportCommand = PassthroughSubject<Void, Never>()
         
         var body : some Scene {
@@ -63,11 +66,21 @@ struct OutlinerApp: App {
                 ContentView(document: file.$document)
                     .onReceive(exportCommand) { _ in
                         do {
-                            let text = try file.document.exportToText()
-                            let documents = getDocumentsFolder() // FIXME: gets sandboxed url?
-                            let fileName = "output" // FIXME: find how to get file name, possibly from file variable
-                            let outputFile = documents.appendingPathComponent(fileName).appendingPathExtension("txt")
+                            let fileName = file.fileURL?.lastPathComponent // FIXME: find how to get file name, possibly from file variable
+                            
+                            // either chooses to save to the same directory or falls back to the documents folder
+                            let directory = file.fileURL?.deletingLastPathComponent() ?? getDocumentsFolder()
+                            
+                            // writes to the predetermined filename or uses 'output' if it cannot be found
+                            let outputFile = directory.appendingPathComponent(fileName ?? "output.tree").appendingPathExtension("txt")
+                            
+                            
                             print("Output URL: " + outputFile.path)
+                            
+                            // get contents of file
+                            let text = try file.document.exportToText()
+                            
+                            // write to the given file
                             try text.write(to: outputFile, atomically: true, encoding: .utf8)
                         } catch let e {
                             print("Export error:\n" + e.localizedDescription)
