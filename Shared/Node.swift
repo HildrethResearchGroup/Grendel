@@ -5,7 +5,7 @@
 //  Created by Emily Hepperlen on 5/24/21.
 //
 
-import Foundation
+import SwiftUI
 
 class Node<Content: Codable>: Identifiable, Codable {
     var content: Content
@@ -75,8 +75,60 @@ class Node<Content: Codable>: Identifiable, Codable {
         try container.encode(children, forKey: .children)
         try container.encode(content, forKey: .content)
     }
-}
-
-extension Node where Content == String {
     
+    //MARK: Text settings
+    struct TextSettings {
+        private(set) var isBold: Bool
+        private(set) var isItalicized: Bool
+        private(set) var foregroundColor: Color
+        private(set) var highlightColor: Color?
+        private(set) var font: Font
+        
+        init() {
+            isBold = false
+            isItalicized = false
+            foregroundColor = .black
+            highlightColor = nil
+            font = .system(.body)
+        }
+        
+        func getFont() -> Font {
+            // apply bolding, italics, etc. to a copy of the font
+            var stylizedFont: Font
+            stylizedFont = font
+            
+            // apply modifiers based on values
+            if isBold {
+                stylizedFont = stylizedFont.bold()
+            }
+            
+            if isItalicized {
+                stylizedFont = stylizedFont.italic()
+            }
+            
+            return stylizedFont
+        }
+        
+        mutating func setBold(_ boolean: Bool) {
+            isBold = boolean
+        }
+        
+        mutating func setItalicized(_ boolean: Bool) {
+            isItalicized = boolean
+        }
+        
+        mutating func setFont(_ newFont: Font) {
+            font = newFont
+        }
+        
+        mutating func setForeground(color: Color) {
+            foregroundColor = color
+        }
+        
+        mutating func setHighlight(color: Color) {
+            highlightColor = color
+        }
+        
+        // TODO: reset font settings function
+    }
 }
