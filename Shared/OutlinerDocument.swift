@@ -35,20 +35,29 @@ struct OutlinerDocument: FileDocument {
         tree.move(nodeAA, toParent: nodeA, at: 0)
         let nodeB = Node<String>(content: "B")
         tree.move(nodeB, toParent: tree.rootNode, at: 1)
-
-        let tree2: Tree
-        do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let data = try encoder.encode(tree)
-            if let jsonString = String(data: data, encoding: .utf8) {
-              print(jsonString)
-            }
-            let decoder = JSONDecoder()
-            tree2 = try decoder.decode(Tree.self, from: data)
-        } catch {
-            print("UH Oh spagettios")
-        }
+        let nodeX = Node<String>(content: "X")
+        tree.move(nodeX, toParent: nodeB, at: 0)
+        let nodeY = Node<String>(content: "Y")
+        tree.move(nodeY, toParent: nodeX, at: 0)
+        
+//        print(nodeY.depth)
+//        tree.findMaxDepth()
+//        print(tree.levelWidths)
+//        print(tree.maxDepth)
+//
+//        let tree2: Tree
+//        do {
+//            let encoder = JSONEncoder()
+//            encoder.outputFormatting = .prettyPrinted
+//            let data = try encoder.encode(tree)
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//              print(jsonString)
+//            }
+//            let decoder = JSONDecoder()
+//            tree2 = try decoder.decode(Tree.self, from: data)
+//        } catch {
+//            print("UH Oh spagettios")
+//        }
     }
 
     static var readableContentTypes: [UTType] { [.treeType] }

@@ -7,10 +7,14 @@
 
 import Foundation
 
-struct Tree: Codable {
+class Tree: Codable {
     // The root node is used as a container for other nodes only, it contains no data, is not rendered,
     var rootNode = Node<String>(content: "")
     var selectedLevel: Int? = nil
+    var maxDepth: Int = 0
+    var levelWidths: [CGFloat] = [0.2]
+    
+
     
     // MARK: modifications
     // Move a node to being a child of the node above it in its subtree
@@ -26,6 +30,23 @@ struct Tree: Codable {
             // Move to the end of the list of children of the node above it
             move(node, toParent: newParent, at: newParent.children.endIndex)
         }
+        
+        findMaxDepth()
+    
+    }
+    
+    func findMaxDepth() {
+        
+        maxDepth = rootNode.checkMaxDepth()
+        
+        let count = 0..<maxDepth
+        
+        for i in count {
+            if(i>=levelWidths.count){
+                levelWidths.insert(0.2, at: i)
+            }
+        }
+        
     }
     
     // Move a node to be under its parent node
@@ -41,6 +62,7 @@ struct Tree: Codable {
             // Move the node to the parent's parent, right after parent
             move(node, toParent: newParent, at: insertIndex) // Can print an error only if parent's parent has no children, which is impossible
         }
+        findMaxDepth()
     }
     
     // Move a node from one parent to another, breaking the relationship between its current parent and making one with the new parent
