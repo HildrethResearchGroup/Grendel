@@ -9,6 +9,7 @@ import SwiftUI
 
 class Node<Content: Codable>: Identifiable, Codable {
     var content: Content
+    var textSettings: TextSettings = TextSettings()
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
@@ -64,6 +65,7 @@ class Node<Content: Codable>: Identifiable, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         children = try container.decode(Array<Node>.self, forKey: .children)
         content = try container.decode(Content.self, forKey: .content)
+        textSettings = TextSettings()
         for child in children {
             child.parent = self
         }
@@ -83,7 +85,9 @@ class Node<Content: Codable>: Identifiable, Codable {
         private(set) var isUnderlined: Bool
         private(set) var foregroundColor: Color
         private(set) var highlightColor: Color?
-        private(set) var font: Font
+        
+        // font is private to force users to use getFont() which applies formatting on call
+        private var font: Font
         
         init() {
             weight = .regular
@@ -94,6 +98,7 @@ class Node<Content: Codable>: Identifiable, Codable {
             font = .system(.body)
         }
         
+        // this function returns a copy of the font with appropriate modifiers
         func getFont() -> Font {
             // apply bolding, italics, etc. to a copy of the font
             var stylizedFont: Font
@@ -140,5 +145,23 @@ class Node<Content: Codable>: Identifiable, Codable {
             highlightColor = nil
             font = .system(.body)
         }
+    }
+}
+
+//MARK: NodeView
+struct NodeView: View {
+    var node: Node<String>
+    var ts: Node<String>.TextSettings
+    
+    init(node: Node<String>) {
+        self.node = node
+        ts = self.node.textSettings
+    }
+    
+    var body: some View {
+        Text(node.content)
+            .font(ts.getFont())
+            .foregroundColor(ts.foregroundColor)
+            .background(ts.highlightColor)
     }
 }
