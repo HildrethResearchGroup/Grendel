@@ -66,7 +66,8 @@ struct OutlinerApp: App {
                 ContentView(document: file.$document)
                     .onReceive(exportCommand) { _ in
                         do {
-                            let fileName = file.fileURL?.lastPathComponent // FIXME: find how to get file name, possibly from file variable
+                            // get the name of the file, including extension
+                            let fileName = file.fileURL?.lastPathComponent
                             
                             // either chooses to save to the same directory or falls back to the documents folder
                             let directory = file.fileURL?.deletingLastPathComponent() ?? getDocumentsFolder()
