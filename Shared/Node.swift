@@ -78,15 +78,17 @@ class Node<Content: Codable>: Identifiable, Codable {
     
     //MARK: Text settings
     struct TextSettings {
-        private(set) var isBold: Bool
+        private(set) var weight: Font.Weight
         private(set) var isItalicized: Bool
+        private(set) var isUnderlined: Bool
         private(set) var foregroundColor: Color
         private(set) var highlightColor: Color?
         private(set) var font: Font
         
         init() {
-            isBold = false
+            weight = .regular
             isItalicized = false
+            isUnderlined = false
             foregroundColor = .black
             highlightColor = nil
             font = .system(.body)
@@ -97,10 +99,7 @@ class Node<Content: Codable>: Identifiable, Codable {
             var stylizedFont: Font
             stylizedFont = font
             
-            // apply modifiers based on values
-            if isBold {
-                stylizedFont = stylizedFont.bold()
-            }
+            stylizedFont =  stylizedFont.weight(weight)
             
             if isItalicized {
                 stylizedFont = stylizedFont.italic()
@@ -109,8 +108,8 @@ class Node<Content: Codable>: Identifiable, Codable {
             return stylizedFont
         }
         
-        mutating func setBold(_ boolean: Bool) {
-            isBold = boolean
+        mutating func setWeight(_ newWeight: Font.Weight) {
+            weight = newWeight
         }
         
         mutating func setItalicized(_ boolean: Bool) {
@@ -129,6 +128,17 @@ class Node<Content: Codable>: Identifiable, Codable {
             highlightColor = color
         }
         
+        mutating func setUnderline(_ boolean: Bool) {
+            isUnderlined = boolean
+        }
+        
         // TODO: reset font settings function
+        mutating func reset() {
+            weight = .regular
+            isItalicized = false
+            foregroundColor = .black
+            highlightColor = nil
+            font = .system(.body)
+        }
     }
 }
