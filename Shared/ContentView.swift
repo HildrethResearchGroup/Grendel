@@ -103,8 +103,6 @@ struct Toolbar: View {
 }
 
 
-var barList : [dragDivider] = []
-
 
 
 
@@ -144,8 +142,6 @@ struct DragBar: View {
     
     var body: some View {
         
-        createBarList(tree: tree)
-        
         return ZStack(){
             Rectangle()
                 .opacity(0)
@@ -153,23 +149,14 @@ struct DragBar: View {
             
             GeometryReader{ geometry in
                 HStack(){
-                    ForEach(0..<tree.levelWidths.count, id: \.self){dividerNumber in
-                        barList[dividerNumber]
-                            .offset(x: geometry.size.width * tree.levelWidths[dividerNumber])//, y: geometry.size.height*0.5)
-                        
-                    }
+                    
+                    dragDivider(tree: tree, dividerNumber: 1)
+                        .offset(x: tree.levelWidths[1])//, y: geometry.size.height*0.5)
                 }
             }
         }
     }
     
-    func createBarList(tree: Tree) {
-        let range = 0 ..< tree.levelWidths.count
-        
-        for i in range{
-            barList.insert(dragDivider(tree: tree, dividerNumber: i), at: i)
-        }
-    }
 }
 
 struct dragDivider : View{
@@ -182,59 +169,46 @@ struct dragDivider : View{
     var body: some View{
         GeometryReader{ geometry in
             //var level: CGFloat = 0.2
-            ZStack{
-            
-            Divider()
-                Rectangle()
-                    .frame(width: 20)
-                    .opacity(0.00000000000001)
-               
-                .foregroundColor(colorScheme == .dark ? Color.black: Color.white)
+            HStack{
+                ZStack{
+                    
+                    Divider()
+                    Rectangle()
+                        .frame(width: 20)
+                        .opacity(0.00000000000001)
+                        
+                        .foregroundColor(colorScheme == .dark ? Color.black: Color.white)
+                    
+                }
                 
-        }
+                if(dividerNumber < tree.levelWidths.count - 1){
+                    dragDivider(tree: tree, dividerNumber: dividerNumber + 1)
+                        .offset(x: tree.levelWidths[dividerNumber + 1])
+                }
+            }
             .offset(x: viewState.width, y: viewState.height)
             .gesture(
                 DragGesture().onChanged { value in
                     viewState = CGSize(width: value.location.x, height: 0)
                 }
                 .onEnded { value in
-                   
-                        //viewState = .zero
-                    print(viewState.width / geometry.size.width)
                     
-                    let range = dividerNumber ..< tree.levelWidths.count
-                    
-                    for i in range {
-                        tree.levelWidths[i] = 0.2 + viewState.width / geometry.size.width
-                        barList[i].changeViewState(width: viewState.width)
-                    }
-                    
-                    print(tree.levelWidths)
-                    print(viewState.width / geometry.size.width)
-                    
-                    //repositionBars(tree: tree, width: geometry.size.width)
+//                  viewState = .zero
+//                    print(viewState.width / geometry.size.width)
+//
+//                    let range = dividerNumber ..< tree.levelWidths.count
+//
+//                    for i in range {
+//                        tree.levelWidths[i] = 0.2 + viewState.width / geometry.size.width
+//                    }
+//
+//                    print(tree.levelWidths)
+//                    print(viewState.width / geometry.size.width)
                     
                 }
             )
             
         }
-    }
-    
-//    func repositionBars (tree : Tree, width: CGFloat) {
-//
-//
-//            let divider = 0..<barList.count
-//            for i in divider{
-//                barList[i]
-//                    .offset(x:width * tree.levelWidths[i])
-//
-//        }
-//
-//    }
-    
-    func changeViewState (width: CGFloat){
-        viewState = CGSize(width: width, height: 0)
-        
     }
 }
 
