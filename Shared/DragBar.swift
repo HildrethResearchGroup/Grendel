@@ -12,7 +12,7 @@ struct DragBar: View {
     @Environment(\.colorScheme) var colorScheme
     
     //Requires a tree object
-    var tree: Tree
+    @ObservedObject var tree: Tree
     
     var body: some View {
         

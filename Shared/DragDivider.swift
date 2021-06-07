@@ -15,7 +15,7 @@ struct DragDivider : View{
     @Environment(\.colorScheme) var colorScheme
     
     //Requires the tree and which divider it is.
-    var tree: Tree
+    @ObservedObject var tree: Tree
     var dividerNumber : Int
     
     var body: some View{

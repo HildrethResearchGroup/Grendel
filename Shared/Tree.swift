@@ -7,14 +7,13 @@
 
 import Foundation
 
-class Tree: Codable {
+class Tree: Codable, ObservableObject {
     // The root node is used as a container for other nodes only, it contains no data, is not rendered,
     var rootNode = Node<String>(content: "")
     var selectedLevel: Int? = nil
-    var maxDepth: Int = 0
+    @Published var maxDepth: Int = 0
     var levelWidths: [CGFloat] = [100]
     var currentWidths: [CGFloat] = [100]
-    
     
     
     init() {}
@@ -65,7 +64,6 @@ class Tree: Codable {
                 currentWidths.insert(100, at: i)
             }
         }
-        //print(maxDepth)
         
     }
     

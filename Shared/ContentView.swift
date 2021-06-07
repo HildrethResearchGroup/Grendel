@@ -8,7 +8,6 @@
 import SwiftUI
 
 var tree: Tree  = Tree()
-
 struct ContentView: View {
     @Binding var document: OutlinerDocument
     @Environment(\.colorScheme) var colorScheme
@@ -38,7 +37,7 @@ struct ContentView: View {
 
 //Toolbar functions
 func deleteAction() {
-    print("Deleted")
+    tree.addMaxDepth()
 }
 
 func addItemAction() {
