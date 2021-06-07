@@ -48,8 +48,8 @@ struct OutlinerApp: App {
                         labelAction()
                     }
                     
-                    Button("Font"){
-                        fontAction()
+                    Button("Text"){
+                        textAction()
                     }
                 }
             }

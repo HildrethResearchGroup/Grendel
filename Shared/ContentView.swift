@@ -22,7 +22,11 @@ struct ContentView: View {
 }
 
 //Toolbar functions
-func viewAction() {
+func treeViewAction() {
+    print("Switch between tree and list view")
+}
+
+func listViewAction() {
     print("Switch between tree and list view")
 }
 
@@ -62,7 +66,7 @@ func colorAction() {
     print("Colored")
 }
 
-func fontAction() {
+func textAction() {
     print("Change font")
 }
 
@@ -72,28 +76,29 @@ struct Toolbar: View {
         // main buttons to modify the model
         //FIXME: Enter doesn't work in full screen
 //        ActionPicker(imageNames: ["ListView", "TreeView"], labels: ["List View", "Tree View"], customAction: viewAction)
-        HStack(alignment: .center) {
-            ActionButton(imageName: "ListView", label: "List View", customAction: viewAction)
-            ActionButton(imageName: "TreeView", label: "Tree View", customAction: viewAction)
-        }
+//        HStack(alignment: .center) {
+//            ActionButton(imageName: "ListView", label: "List View", customAction: viewAction)
+//            ActionButton(imageName: "TreeView", label: "Tree View", customAction: viewAction)
+//        }
+        ViewPicker()
         Spacer()
         HStack(alignment: .center) {
-            ActionButton(imageName: "DeleteItem", label: "Delete Item(s)", customAction: deleteAction)
+            ActionButton(imageName: "DeleteItem", title: "Delete Item(s)", help: "Delete", customAction: deleteAction)
                 .shadow(radius: 1)
                 .keyboardShortcut(.delete, modifiers: [.shift])
-            ActionButton(imageName: "AddItem", label: "Add Item", customAction: addItemAction)
+            ActionButton(imageName: "AddItem", title: "Add Item", help: "Add an item", customAction: addItemAction)
                 .shadow(radius: 1)
                 .keyboardShortcut(.return, modifiers: [])
-            ActionButton(imageName: "AddChild", label: "Add Child", customAction: addChildAction)
+            ActionButton(imageName: "AddChild", title: "Add Child", help: "Add a child", customAction: addChildAction)
                 .shadow(radius: 1)
                 .keyboardShortcut(.return, modifiers: [.shift])
-            ActionButton(imageName: "Indent", label: "Indent", customAction: indentAction)
+            ActionButton(imageName: "Indent", title: "Indent", help: "Indent", customAction: indentAction)
                 .shadow(radius: 1)
                 .keyboardShortcut(.tab, modifiers: [])
-            ActionButton(imageName: "Outdent", label: "Outdent", customAction: outdentAction)
+            ActionButton(imageName: "Outdent", title: "Outdent", help: "Outdent", customAction: outdentAction)
                 .shadow(radius: 1)
                 .keyboardShortcut(.tab, modifiers: [.shift])
-            ActionButton(imageName: "ToggleFamily", label: "Toggle Family", customAction: toggleAction)
+            ActionButton(imageName: "ToggleFamily", title: "Toggle Family", help: "Toggle family", customAction: toggleAction)
                 .shadow(radius: 1)
         }
         //HStack(alignment: .bottom){
@@ -102,8 +107,8 @@ struct Toolbar: View {
         //}
         Spacer()
         HStack(alignment: .bottom){
-            ActionButton(imageName: "Colors", label: "Colors", customAction: colorAction)
-            ActionButton(imageName: "Fonts", label: "Fonts", customAction: fontAction)
+            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
+            ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
         }
     }
 }
@@ -114,54 +119,68 @@ struct Toolbar: View {
  
  - Parameters:
     - imageName: The name of the image in assets
-    - label: The name of the button action
+    - title: The name of the button
+    - help: The help tag for the button
     - customAction: The toolbar action that is represented
  */
 struct ActionButton: View {
     var imageName: String
-    var label: String
+    var title: String
+    var help: String
     var customAction: () -> Void
     
     var body: some View {
         Button(action: customAction, label: {
-            Image(imageName)
+            Image(imageName, label: Text(title))
                 //.font(.title)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 25.0, height: 25.0)
         })
-        .help(label)
+        .help(help)
     }
 }
 
 /**
- ActionPicker is the struct used to create toolbar segmented controls.
-
- - Parameters:
-    - imageNames: The names of the images in assets
-    - labels: The names of the options
-    - customAction: The toolbar action that is represented
+ ViewPicker is the struct used to create toolbar segmented controls for viewing the document as a tree or list.
  */
-struct ActionPicker: View {
-    var imageNames: 
-    var labels: [String]
-    var customAction: () -> Void
+struct ViewPicker: View {
+    
+    private enum ViewNotes: String, CaseIterable, Identifiable {
+        case tree
+        case list
+
+        var id: String { self.rawValue }
+        
+        var viewAction: () {
+            switch self {
+            case .tree: return treeViewAction()
+            case .list: return listViewAction()
+            }
+        }
+    }
+    
+    @State private var selectedView = ViewNotes.tree
+    @State private var selectedAction: () = treeViewAction()
     
     var body: some View {
-        var choice = labels[0] // the user's current selection, default is the first item
         HStack { // horizontal controls
-            Picker(selection: $imageNames, label: Text("What is your favorite color?")) {
-                    ForEach(labels, id: \.self) {
-                        Image($0)
-                            //.font(.title)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 25.0, height: 25.0)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-
-            Text("Value: \($imageNames)")
+            Picker("View", selection: $selectedView) {
+                /// TODO: get the picker selection with \($selectedView) or \($selectedAction) and bind to the func to change how the document is drawn
+                Image("TreeView", label: Text("Tree View"))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25.0, height: 25.0)
+                    .tag(ViewNotes.tree)
+                    .help("View notes as tree") /// TODO: fix why the help tags don't display in the picker?
+                Image("ListView", label: Text("List View"))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25.0, height: 25.0)
+                    .tag(ViewNotes.list)
+                    .help("View notes as list")
+            }
+            .pickerStyle(SegmentedPickerStyle())
         }
     }
 }
