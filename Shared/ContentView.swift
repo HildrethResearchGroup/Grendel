@@ -11,6 +11,8 @@ struct ContentView: View {
     @Binding var document: OutlinerDocument
     @Environment(\.colorScheme) var colorScheme
     
+    
+    
     var body: some View {
         GeometryReader{ geometry in
             VStack(spacing: 0){
@@ -30,6 +32,14 @@ struct ContentView: View {
         }
     }
 }
+
+
+    
+    
+
+    
+
+
 
 //Toolbar functions
 func deleteAction() {
@@ -114,7 +124,7 @@ struct DragBar: View {
 
     init() {
         tree = Tree()
-        
+
         // TODO: remove below, was test code only
         let nodeA = Node<String>(content: "A")
         tree.move(nodeA, toParent: tree.rootNode, at: 0)
@@ -134,7 +144,7 @@ struct DragBar: View {
         tree.move(nodeX, toParent: nodeAA, at: 0)
         let nodeY = Node<String>(content: "Y")
         tree.move(nodeY, toParent: nodeX, at: 0)
-        
+
         tree.findMaxDepth()
     }
     
@@ -150,8 +160,8 @@ struct DragBar: View {
             GeometryReader{ geometry in
                 HStack(){
                     
-                    dragDivider(tree: tree, dividerNumber: 1)
-                        .offset(x: tree.levelWidths[1])//, y: geometry.size.height*0.5)
+                    dragDivider(tree: tree, dividerNumber: 0, previousDividerPosition: 0.0)
+                        .offset(x: tree.levelWidths[0])//, y: geometry.size.height*0.5)
                 }
             }
         }
@@ -165,10 +175,10 @@ struct dragDivider : View{
     
     var tree: Tree
     var dividerNumber : Int
+    var previousDividerPosition : CGFloat
     
     var body: some View{
         GeometryReader{ geometry in
-            //var level: CGFloat = 0.2
             HStack{
                 ZStack{
                     
@@ -182,31 +192,25 @@ struct dragDivider : View{
                 }
                 
                 if(dividerNumber < tree.levelWidths.count - 1){
-                    dragDivider(tree: tree, dividerNumber: dividerNumber + 1)
+                    dragDivider(tree: tree, dividerNumber: dividerNumber + 1, previousDividerPosition: tree.levelWidths[dividerNumber])
                         .offset(x: tree.levelWidths[dividerNumber + 1])
                 }
             }
             .offset(x: viewState.width, y: viewState.height)
             .gesture(
                 DragGesture().onChanged { value in
-                    viewState = CGSize(width: value.location.x, height: 0)
-                }
-                .onEnded { value in
                     
-//                  viewState = .zero
-//                    print(viewState.width / geometry.size.width)
-//
-//                    let range = dividerNumber ..< tree.levelWidths.count
-//
-//                    for i in range {
-//                        tree.levelWidths[i] = 0.2 + viewState.width / geometry.size.width
-//                    }
-//
-//                    print(tree.levelWidths)
-//                    print(viewState.width / geometry.size.width)
+                    if(value.location.x > -80){
+                        viewState = CGSize(width: value.location.x, height: 0)
+                    }
+                    else{
+                        viewState = CGSize(width: -80, height: 0)
+
+                    }
                     
-                }
-            )
+                        tree.currentWidths[dividerNumber] = tree.levelWidths[dividerNumber] + viewState.width
+                    
+                })
             
         }
     }

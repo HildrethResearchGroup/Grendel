@@ -13,6 +13,7 @@ class Tree: Codable {
     var selectedLevel: Int? = nil
     var maxDepth: Int = 0
     var levelWidths: [CGFloat] = [100]
+    var currentWidths: [CGFloat] = [100]
     
 
     
@@ -43,9 +44,11 @@ class Tree: Codable {
         
         for i in count {
             if(i>=levelWidths.count){
-                levelWidths.insert(levelWidths[i-1] + 100, at: i)
+                levelWidths.insert(100, at: i)
+                currentWidths.insert(100, at: i)
             }
         }
+        //print(maxDepth)
         
     }
     
