@@ -11,7 +11,8 @@ struct ContentView: View {
     @Binding var document: OutlinerDocument
     
     var body: some View {
-        Text("Tree goes here")
+        TreeView()
+        //Text("Tree goes here")
             .font(.title)
             .frame(minWidth: 400, idealWidth: 600, maxWidth: .infinity, minHeight: 300, idealHeight: 400, maxHeight: .infinity, alignment: .center)
             .toolbar(content: {

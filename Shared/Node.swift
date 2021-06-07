@@ -21,6 +21,12 @@ class Node<Content: Codable>: Identifiable, Codable {
             return parent!.depth + 1
         }
     }
+    var firstChild: Bool {
+        return parent!.indexOfChild(self) == 0
+    }
+    var lastChild: Bool {
+        return parent!.indexOfChild(self) == parent!.children.endIndex - 1
+    }
     
     init(content: Content) {
         self.content = content
