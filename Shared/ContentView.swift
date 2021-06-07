@@ -12,8 +12,6 @@ struct ContentView: View {
     
     var body: some View {
         TreeView()
-        //Text("Tree goes here")
-            .font(.title)
             .frame(minWidth: 400, idealWidth: 600, maxWidth: .infinity, minHeight: 300, idealHeight: 400, maxHeight: .infinity, alignment: .center)
             .toolbar(content: {
                 Toolbar()
