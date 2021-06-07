@@ -53,6 +53,23 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     func getParent() -> Node{
         return self.parent!
     }
+  
+    func checkMaxDepth() -> Int{
+        if(children.count == 0){
+            return depth
+        }else{
+            var maxValue = 0
+            for child in children{
+                let tempValue = child.checkMaxDepth()
+                if( tempValue > maxValue ){
+                    maxValue = tempValue
+                }
+                
+            }
+            return maxValue
+            
+        }
+    }
     
     
     
