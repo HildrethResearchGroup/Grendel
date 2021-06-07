@@ -11,14 +11,18 @@ struct ContentView: View {
     @Binding var document: OutlinerDocument
     
     var body: some View {
-        ScrollView([.horizontal, .vertical]) {
-            TreeView()
-                .toolbar(content: {
-                    Toolbar()
-                })
-                .focusable()
+        GeometryReader { geo in
+            ScrollView([.vertical, .horizontal]) {
+                TreeView()
+                    .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
+                    .toolbar(content: {
+                        Toolbar()
+                    })
+                    .focusable()
+                    .padding()
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color.white)
     }
 }
 
@@ -115,6 +119,7 @@ struct ActionButton: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView(document: .constant(OutlinerDocument()))
+            
     }
 }
 
