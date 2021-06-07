@@ -21,6 +21,7 @@ struct DragBar: View {
             Rectangle()
                 .opacity(0)
                 .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom).foregroundColor(colorScheme == .dark ? Color.black: Color.white), alignment: .bottom)
+                .overlay(Rectangle().frame(width: nil, height: 1, alignment: .top).foregroundColor(colorScheme == .dark ? Color.black: Color.white), alignment: .top)
             
             GeometryReader{ geometry in
                 HStack(){

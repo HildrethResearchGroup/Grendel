@@ -14,17 +14,23 @@ struct ContentView: View {
     
     var body: some View {
         GeometryReader { geo in
-            ScrollView([.vertical, .horizontal]) {
-                TreeView()
-                    .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
-                    .toolbar(content: {
-                        Toolbar()
-                    })
-                    .focusable()
-                    .padding()
+            VStack(spacing: 0){
+                DragBar(tree: tree)
+                    .frame(width: geo.size.width, height: 20)
+                ScrollView([.vertical, .horizontal]) {
+                    
+                    TreeView()
+                        .padding()
+                        .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
+                        .toolbar(content: {
+                            Toolbar()
+                        })
+                        .focusable()
+                    
+                }
             }
         }
-        .background(Color.white)
+        //.background(Color.white)
     }
 }
 
