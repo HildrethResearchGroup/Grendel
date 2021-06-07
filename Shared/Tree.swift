@@ -15,7 +15,7 @@ class Tree: Codable {
     var levelWidths: [CGFloat] = [100]
     var currentWidths: [CGFloat] = [100]
     
-
+    
     
     // MARK: modifications
     // Move a node to being a child of the node above it in its subtree
@@ -33,7 +33,7 @@ class Tree: Codable {
         }
         
         findMaxDepth()
-    
+        
     }
     
     func findMaxDepth() {
