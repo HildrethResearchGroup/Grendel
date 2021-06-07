@@ -5,10 +5,11 @@
 //  Created by Emily Hepperlen on 5/24/21.
 //
 
-import Foundation
+import SwiftUI
 
 class Node<Content: Codable>: Identifiable, Codable {
     var content: Content
+    var textSettings: TextSettings = TextSettings()
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
@@ -64,6 +65,7 @@ class Node<Content: Codable>: Identifiable, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         children = try container.decode(Array<Node>.self, forKey: .children)
         content = try container.decode(Content.self, forKey: .content)
+        textSettings = TextSettings()
         for child in children {
             child.parent = self
         }
@@ -75,8 +77,115 @@ class Node<Content: Codable>: Identifiable, Codable {
         try container.encode(children, forKey: .children)
         try container.encode(content, forKey: .content)
     }
+    
+    //MARK: Text settings
+    struct TextSettings {
+        private(set) var weight: Font.Weight
+        private(set) var isItalicized: Bool
+        private(set) var isUnderlined: Bool
+        private(set) var foregroundColor: Color
+        private(set) var highlightColor: Color?
+        
+        // font is private to force users to use getFont() which applies formatting on call
+        private var font: Font
+        
+        init() {
+            weight = .regular
+            isItalicized = false
+            isUnderlined = false
+            foregroundColor = .black
+            highlightColor = nil
+            font = .system(.body)
+        }
+        
+        // this function returns a copy of the font with appropriate modifiers
+        func getFont() -> Font {
+            // apply bolding, italics, etc. to a copy of the font
+            var stylizedFont: Font
+            stylizedFont = font
+            
+            stylizedFont =  stylizedFont.weight(weight)
+            
+            if isItalicized {
+                stylizedFont = stylizedFont.italic()
+            }
+            
+            return stylizedFont
+        }
+        
+        mutating func setWeight(_ newWeight: Font.Weight) {
+            weight = newWeight
+        }
+        
+        mutating func setItalicized(_ boolean: Bool) {
+            isItalicized = boolean
+        }
+        
+        mutating func setFont(_ newFont: Font) {
+            font = newFont
+        }
+        
+        mutating func setForeground(color: Color) {
+            foregroundColor = color
+        }
+        
+        mutating func setHighlight(color: Color) {
+            highlightColor = color
+        }
+        
+        mutating func setUnderline(_ boolean: Bool) {
+            isUnderlined = boolean
+        }
+        
+        // TODO: reset font settings function
+        mutating func reset() {
+            weight = .regular
+            isItalicized = false
+            foregroundColor = .black
+            highlightColor = nil
+            font = .system(.body)
+        }
+    }
 }
 
-extension Node where Content == String {
+//MARK: NodeView
+struct NodeView: View {
+    var node: Node<String>
+    var ts: Node<String>.TextSettings
     
+    init(node: Node<String>) {
+        self.node = node
+        ts = self.node.textSettings
+    }
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 4.0).stroke(Color.black)
+            Text(node.content)
+                .if(ts.isUnderlined) { view in
+                    view.underline()
+                }
+                .padding()
+                .font(ts.getFont())
+                .foregroundColor(ts.foregroundColor)
+                .background(ts.highlightColor)
+        }
+    }
+}
+
+// allows for easy application of view modifiers based on a condition
+// source: https://www.avanderlee.com/swiftui/conditional-view-modifier/
+extension View {
+    // Applies the given transform if the given condition evaluates to true.
+    // - Parameters:
+    //   - condition: The condition to evaluate.
+    //   - transform: The transform to apply to the source `View`.
+    // - Returns: Either the original `View` or the modified `View` if the condition is `true`.
+    @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
 }
