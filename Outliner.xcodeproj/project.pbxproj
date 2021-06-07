@@ -27,6 +27,8 @@
 		3FDF3CF4265C465900AA2214 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3CF2265C465900AA2214 /* Tree.swift */; };
 		3FDF3D3C266ABA3200AA2214 /* TreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3D3B266ABA3200AA2214 /* TreeView.swift */; };
 		3FDF3D3D266ABA3200AA2214 /* TreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3D3B266ABA3200AA2214 /* TreeView.swift */; };
+		3FDF3D42266EB9EE00AA2214 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3D41266EB9EE00AA2214 /* NodeView.swift */; };
+		3FDF3D43266EB9EE00AA2214 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3D41266EB9EE00AA2214 /* NodeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,7 @@
 		3FDF3CEF265C41A400AA2214 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		3FDF3CF2265C465900AA2214 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		3FDF3D3B266ABA3200AA2214 /* TreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeView.swift; sourceTree = "<group>"; };
+		3FDF3D41266EB9EE00AA2214 /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +124,7 @@
 				3FDF3CB1265C406D00AA2214 /* ContentView.swift */,
 				3FDF3D3B266ABA3200AA2214 /* TreeView.swift */,
 				3FDF3CEF265C41A400AA2214 /* Node.swift */,
+				3FDF3D41266EB9EE00AA2214 /* NodeView.swift */,
 				3FDF3CF2265C465900AA2214 /* Tree.swift */,
 				3FDF3CB2265C406E00AA2214 /* Assets.xcassets */,
 				3F23C2E9266E8C23006B3D98 /* DragBar.swift */,
@@ -337,6 +341,7 @@
 				3FDF3CDB265C406E00AA2214 /* OutlinerDocument.swift in Sources */,
 				3F23C2ED266E8C60006B3D98 /* DragDivider.swift in Sources */,
 				3FDF3CD9265C406E00AA2214 /* OutlinerApp.swift in Sources */,
+				3FDF3D42266EB9EE00AA2214 /* NodeView.swift in Sources */,
 				3F23C2EA266E8C23006B3D98 /* DragBar.swift in Sources */,
 				3FDF3CDD265C406E00AA2214 /* ContentView.swift in Sources */,
 				3FDF3CF0265C41A400AA2214 /* Node.swift in Sources */,
@@ -352,6 +357,7 @@
 				3FDF3CDC265C406E00AA2214 /* OutlinerDocument.swift in Sources */,
 				3F23C2EE266E8C60006B3D98 /* DragDivider.swift in Sources */,
 				3FDF3CDA265C406E00AA2214 /* OutlinerApp.swift in Sources */,
+				3FDF3D43266EB9EE00AA2214 /* NodeView.swift in Sources */,
 				3F23C2EB266E8C23006B3D98 /* DragBar.swift in Sources */,
 				3FDF3CDE265C406E00AA2214 /* ContentView.swift in Sources */,
 				3FDF3CF1265C41A400AA2214 /* Node.swift in Sources */,
