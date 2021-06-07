@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-class Node<Content: Codable>: Identifiable, Codable {
+class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     var content: Content
     var textSettings: TextSettings = TextSettings()
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
     var selected: Bool = false
+    @Published var childrenShown: Bool = true
     var depth: Int {
         switch parent {
         case nil:
@@ -47,6 +48,10 @@ class Node<Content: Codable>: Identifiable, Codable {
     
     func copy() -> Node {
         return Node(content: content)
+    }
+    
+    func getParent() -> Node{
+        return self.parent!
     }
     
     

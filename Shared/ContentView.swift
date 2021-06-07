@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+var tree: Tree = Tree()
+
 struct ContentView: View {
     @Binding var document: OutlinerDocument
     
@@ -24,23 +26,45 @@ struct ContentView: View {
 
 //Toolbar functions
 func deleteAction() {
-    print("Deleted")
+    let selected = tree.getSelectedArray()
+    for node in selected{
+        node.getParent().removeChild(child: node)
+    }
 }
 
 func addItemAction() {
-    print("Added Item")
+    if(tree.getNumSelected() != 1){
+        print("Could not add Node")
+    }else{
+        let selected = tree.getSelectedArray()[0]
+        let tempNode = Node<String>(content: "")
+        tree.move(tempNode, toParent: selected.getParent(), at: 0)
+    }
+    
 }
 
 func addChildAction() {
-    print("Add Child")
+    if(tree.getNumSelected() != 1){
+        print("Could not add Child Node")
+    }else{
+        let selected = tree.getSelectedArray()[0]
+        let tempNode = Node<String>(content: "")
+        tree.move(tempNode, toParent: selected, at: 0)
+    }
 }
 
 func indentAction() {
-    print("Indented")
+    let selected = tree.getSelectedArray()
+    for node in selected{
+        tree.indent(node: node)
+    }
 }
 
 func outdentAction() {
-    print("outdented")
+    let selected = tree.getSelectedArray()
+    for node in selected{
+        tree.outdent(node: node)
+    }
 }
 
 func editAction() {
@@ -48,7 +72,10 @@ func editAction() {
 }
 
 func toggleAction() {
-    print("Toggled")
+    let selected = tree.getSelectedArray()
+    for node in selected{
+        node.childrenShown = false
+    }
 }
 
 func labelAction() {
