@@ -7,8 +7,9 @@
 
 import SwiftUI
 
+let widths: Array<CGFloat> = [100, 300, 100, 100, 100, 100, 100]
+
 struct TreeView: View {
-    let widths: Array<CGFloat> = [100, 100, 100, 100, 100, 100, 100]
     var body: some View {
         let outlinerDocument = OutlinerDocument()
         Diagram(currNode: outlinerDocument.tree.rootNode, makeNodeView: { (value: Node<String>) in
@@ -43,16 +44,6 @@ struct CollectDict<Key: Hashable, Type>: PreferenceKey {
     }
 }
 
-struct anchorID {
-    let nodeID: UUID
-    let position: anchorPosition
-    
-    enum anchorPosition {
-        case left
-        case right
-    }
-}
-
 struct Diagram<V: View>: View {
     let currNode: Node<String>
     let makeNodeView: (Node<String>) -> V
@@ -63,7 +54,7 @@ struct Diagram<V: View>: View {
         HStack(alignment: .top, spacing: 20) {
             if currNode.depth != 0 {
                 makeNodeView(currNode)
-                    .anchorPreference(key: Key.self, value: .top, transform: { // the anchor point
+                    .anchorPreference(key: Key.self, value: .topLeading, transform: { // the anchor point
                         [self.currNode.id: $0]
                     })
             }
@@ -78,9 +69,10 @@ struct Diagram<V: View>: View {
                     ForEach(self.currNode.children, id: \.id, content: { child in
                         NodeConnectingLine(
                             from: proxy[centers[self.currNode.id]!],
-                            to: proxy[centers[child.id]!],
+                            to: proxy[centers[child.id]!] ,
                             firstChild: child.firstChild,
-                            lastChild: child.lastChild
+                            lastChild: child.lastChild,
+                            parentWidth: widths[self.currNode.depth - 1]
                         )
                         .stroke(Color.gray, style: StrokeStyle(dash: [2.5])) // set stroke of the lines
                     })
@@ -93,25 +85,31 @@ struct Diagram<V: View>: View {
 struct NodeConnectingLine: Shape {
     let offset: CGFloat = 13
 
-    init(from: CGPoint, to: CGPoint, firstChild: Bool, lastChild: Bool) {
+    init(from: CGPoint, to: CGPoint, firstChild: Bool, lastChild: Bool, parentWidth: CGFloat) {
         self.firstChild = firstChild
         self.lastChild = lastChild
+        self.parentWidth = parentWidth
         self.to = to
         self.from = from
     }
     
     var firstChild: Bool
     var lastChild: Bool
+    var parentWidth: CGFloat
     
     private var _from = CGPoint()
     var from: CGPoint {
         get { return _from }
-        set(newValue) { _from = CGPoint(x: newValue.x, y: newValue.y + offset) }
+        set(newValue) { _from = CGPoint(
+            x: newValue.x + parentWidth,
+            y: newValue.y + offset) }
     }
     private var _to = CGPoint()
     var to: CGPoint {
         get { return _to }
-        set(newValue) { _to = CGPoint(x: newValue.x, y: newValue.y + offset) }
+        set(newValue) { _to = CGPoint(
+            x: newValue.x,
+            y: newValue.y + offset) }
     }
     let radius: CGFloat = 5
     var isMiddleChild: Bool = false
