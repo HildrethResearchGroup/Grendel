@@ -12,17 +12,7 @@ struct TreeView: View {
     var body: some View {
         let outlinerDocument = OutlinerDocument()
         Diagram(currNode: outlinerDocument.tree.rootNode, makeNodeView: { (value: Node<String>) in
-            Text("\(value.content)")
-                .padding(5)
-                .foregroundColor(.black)
-                //.background(Color.white) // same color as the document background
-                .frame(width: widths[value.depth-1], alignment: .topLeading) // width of each column/tree level is currently fixed but will later be changed to what the user specifies with the slider bar (could be default value for now)
-                .background(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.gray)
-                        .background(
-                            RoundedRectangle(cornerRadius: 5)
-                                .fill(Color.white)))
+            NodeView(node: value)
         }).background(Color.white)
     }
 }

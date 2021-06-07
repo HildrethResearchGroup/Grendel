@@ -165,17 +165,18 @@ struct NodeView: View {
     }
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 4.0).stroke(Color.black)
-            Text(node.content)
-                .if(ts.isUnderlined) { view in
-                    view.underline()
-                }
-                .padding()
-                .font(ts.getFont())
-                .foregroundColor(ts.foregroundColor)
-                .background(ts.highlightColor)
-        }
+        Text(node.content)
+            .if(ts.isUnderlined) { view in
+                view.underline()
+            }
+            .padding()
+            .font(ts.getFont())
+            .foregroundColor(ts.foregroundColor)
+            .frame(width: 100.0, alignment: .topLeading)
+            .background(
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(ts.highlightColor ?? Color.blue)
+            )
     }
 }
 
