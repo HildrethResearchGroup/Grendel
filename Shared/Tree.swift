@@ -17,6 +17,23 @@ class Tree: Codable {
     
     
     
+    init() {}
+    
+    // MARK: JSON Encoding
+    private enum CodingKeys: String, CodingKey {
+        case rootNode
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        rootNode = try container.decode(Node<String>.self, forKey: .rootNode)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(rootNode, forKey: .rootNode)
+    }
+    
     // MARK: modifications
     // Move a node to being a child of the node above it in its subtree
     func indent(node: Node<String>) {
@@ -92,5 +109,29 @@ class Tree: Codable {
         }
         // Return the copy of the current subtree
         return copyOfRootOfSubtree
+    }
+    
+    // MARK: Utility functions
+    func applyFuncToNodes(filter: (Node<String>) -> Bool, modifyingFunc: (Node<String>) -> Void, minDepth: Int? = nil, maxDepth: Int? = nil, reverse: Bool = false) {
+        applyFuncToNodesRecursive(currNode: rootNode, filter: filter, modifyingFunc: modifyingFunc, minDepth: minDepth, maxDepth: maxDepth, reverse: reverse)
+    }
+    
+    private func applyFuncToNodesRecursive(currNode: Node<String>, filter: (Node<String>) -> Bool, modifyingFunc: (Node<String>) -> Void, minDepth: Int? = nil, maxDepth: Int? = nil, reverse: Bool = false) {
+        // minDepth being nil means there is no min depth
+        if(minDepth == nil || currNode.depth >= minDepth!) {
+            // Apply the modifyingFunc to all nodes that pass the filter
+            if(filter(currNode)) {
+                modifyingFunc(currNode)
+            }
+        }
+        
+        // maxDepth being nil means there is no max depth
+        if(maxDepth == nil || currNode.depth <= maxDepth!) {
+            // Go through the children in reverse or normal order
+            for child in (reverse ? currNode.children.reversed() : currNode.children) {
+                // Recursive call maintaining settings on each child node
+                applyFuncToNodesRecursive(currNode: child, filter: filter, modifyingFunc: modifyingFunc, minDepth: minDepth, maxDepth: maxDepth, reverse: reverse)
+            }
+        }
     }
 }
