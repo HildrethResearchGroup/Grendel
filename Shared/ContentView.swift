@@ -18,7 +18,7 @@ struct ContentView: View {
         GeometryReader{ geometry in
             VStack(spacing: 0){
                 DragBar(tree: tree)
-                    .frame(width: geometry.size.width, height: geometry.size.height*0.03)
+                    .frame(width: geometry.size.width, height: 20)
                 Text("Tree Goes Here")
                     .font(.title)
                     .frame(minWidth: 400, idealWidth: 600, maxWidth: .infinity, minHeight: 300, idealHeight: 400, maxHeight: .infinity, alignment: .center)
