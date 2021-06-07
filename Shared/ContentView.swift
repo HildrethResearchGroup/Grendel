@@ -37,7 +37,7 @@ struct ContentView: View {
 
 //Toolbar functions
 func deleteAction() {
-    tree.addMaxDepth()
+    print("Delete Item")
 }
 
 func addItemAction() {
