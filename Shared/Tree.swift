@@ -132,4 +132,18 @@ class Tree: Codable, ObservableObject {
             }
         }
     }
+    
+    // Returns an array which is a preorder traversal of tree, which will come out as a list from top to bottom in a column of selected nodes
+    func getSelectedArray() -> Array<Node<String>> {
+        var selectedNodes = Array<Node<String>>()
+        applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in selectedNodes.append(node)})
+        return selectedNodes
+    }
+    
+    // Returns the number of selected nodes
+    func getNumSelected() -> Int {
+        var count: Int = 0
+        applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in count += 1})
+        return count
+    }
 }

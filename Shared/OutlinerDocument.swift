@@ -17,6 +17,7 @@ extension UTType {
 struct OutlinerDocument: FileDocument {
     
     var tree: Tree
+    var nodeCopyBuffer = Array<Node<String>>()
 
         init() {
             tree = Tree()
@@ -109,24 +110,10 @@ struct OutlinerDocument: FileDocument {
     }
 
     // MARK: intent functions
-    // Returns an array which is a preorder traversal of tree, which will come out as a list from top to bottom in a column of selected nodes
-    func getSelectedArray() -> Array<Node<String>> {
-        var selectedNodes = Array<Node<String>>()
-        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in selectedNodes.append(node)})
-        return selectedNodes
-    }
-    
     // Deselects a node while allowing for multiple nodes to still be selected
     func deselectMultiple(node: Node<String>) {
-        var selecetedNodes = getSelectedArray()
-        for (index, selectedNode) in selecetedNodes.enumerated() {
-            if selectedNode.id == node.id {
-                selectedNode.selected = false
-                selecetedNodes.remove(at: index)
-                break
-            }
-        }
-        if selecetedNodes.count == 0 {
+        tree.applyFuncToNodes(filter: {currNode in currNode.id == node.id}, modifyingFunc: {currNode in currNode.selected = false}, maxDepth: node.depth)
+        if tree.getNumSelected() == 0 {
             tree.selectedLevel = nil
         }
     }
@@ -203,7 +190,7 @@ struct OutlinerDocument: FileDocument {
     
     // Duplicate selected nodes and place above
     func duplicateSelected() {
-        let selectedNodes = getSelectedArray()
+        let selectedNodes = tree.getSelectedArray()
         
         // Insert all above the first selected node
         for selectedNode in selectedNodes {
@@ -214,9 +201,40 @@ struct OutlinerDocument: FileDocument {
         }
     }
     
+    func newline(createUnder: Bool = false) {
+        let newNode = Node<String>(content: "")
+        let selectedNode = tree.getSelectedArray()
+        if selectedNode.count != 1 {
+            print("Alert: couldn't add new line with \(selectedNode.count) nodes selected")
+        } else {
+            if createUnder {
+                moveUnder(movingNode: newNode, aboveNode: selectedNode.first!)
+            } else {
+                moveAbove(movingNode: newNode, belowNode: selectedNode.first!)
+            }
+        }
+    }
+    
     // TODO: copy
+    mutating func copyNodesSelected() {
+        nodeCopyBuffer.removeAll()
+        let selectedNodes = tree.getSelectedArray()
+        for selectedNode in selectedNodes {
+            nodeCopyBuffer.append(tree.copySubtree(rootOfSubtree: selectedNode))
+        }
+    }
     
     // TODO: paste
+    func pasteNodesSelected() {
+        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in
+            node.selected = false
+            for pasteNode in nodeCopyBuffer {
+                let copyOfPasteNode = tree.copySubtree(rootOfSubtree: pasteNode)
+                moveUnder(movingNode: copyOfPasteNode, aboveNode: node)
+                copyOfPasteNode.selected = true
+            }
+        })
+    }
     
     
 }

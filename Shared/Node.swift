@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-class Node<Content: Codable>: Identifiable, Codable {
+class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     var content: Content
     var textSettings: TextSettings = TextSettings()
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
     var selected: Bool = false
+    @Published var childrenShown: Bool = true
     var depth: Int {
         switch parent {
         case nil:
@@ -21,6 +22,12 @@ class Node<Content: Codable>: Identifiable, Codable {
         default:
             return parent!.depth + 1
         }
+    }
+    var firstChild: Bool {
+        return parent!.indexOfChild(self) == 0
+    }
+    var lastChild: Bool {
+        return parent!.indexOfChild(self) == parent!.children.endIndex - 1
     }
     
     init(content: Content) {
@@ -43,6 +50,10 @@ class Node<Content: Codable>: Identifiable, Codable {
         return Node(content: content)
     }
     
+    func getParent() -> Node{
+        return self.parent!
+    }
+  
     func checkMaxDepth() -> Int{
         if(children.count == 0){
             return depth
@@ -58,7 +69,6 @@ class Node<Content: Codable>: Identifiable, Codable {
             return maxValue
             
         }
-        //return -1
     }
     
     
@@ -177,17 +187,18 @@ struct NodeView: View {
     }
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 4.0).stroke(Color.black)
-            Text(node.content)
-                .if(ts.isUnderlined) { view in
-                    view.underline()
-                }
-                .padding()
-                .font(ts.getFont())
-                .foregroundColor(ts.foregroundColor)
-                .background(ts.highlightColor)
-        }
+        Text(node.content)
+            .if(ts.isUnderlined) { view in
+                view.underline()
+            }
+            .padding()
+            .font(ts.getFont())
+            .foregroundColor(ts.foregroundColor)
+            .frame(width: 100.0, alignment: .topLeading)
+            .background(
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(ts.highlightColor ?? Color.blue)
+            )
     }
 }
 
