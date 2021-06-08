@@ -85,19 +85,11 @@ func outdentAction() {
     }
 }
 
-func editAction() {
-    print("Edit")
-}
-
 func toggleAction() {
     let selected = tree.getSelectedArray()
     for node in selected{
         node.childrenShown = false
     }
-}
-
-func labelAction() {
-    print("Labled")
 }
 
 func colorAction() {
@@ -139,10 +131,6 @@ struct Toolbar: View {
             ActionButton(imageName: "ToggleFamily", title: "Toggle Family", help: "Toggle family", customAction: toggleAction)
                 .shadow(radius: 1)
         }
-        //HStack(alignment: .bottom){
-            //ActionButton(imageName: "pencil", label: "Edit Note", customAction: editAction)
-            //ActionButton(imageName: "label", label: "label", customAction: labelAction)
-        //}
         Spacer()
         HStack(alignment: .bottom){
             ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)

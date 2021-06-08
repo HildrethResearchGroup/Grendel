@@ -36,17 +36,17 @@ struct OutlinerApp: App {
                     }.keyboardShortcut(.tab, modifiers: [.shift])
                 }
                 CommandMenu("Node"){
-                    Button("Edit Node"){
-                        editAction()
-                    }
+//                    Button("Edit Node"){
+//                        editAction()
+//                    }
                     
                     Button("Toggle Children"){
                         toggleAction()
                     }
                     
-                    Button("Highlight"){
-                        labelAction()
-                    }
+//                    Button("Highlight"){
+//                        labelAction()
+//                    }
                     
                     Button("Text"){
                         textAction()
