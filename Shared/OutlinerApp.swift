@@ -13,7 +13,6 @@ struct OutlinerApp: App {
     var body: some Scene {
         DocumentWindow()
             .windowToolbarStyle(UnifiedWindowToolbarStyle(showsTitle: false))
-            
     }
     
     // Custom scene that handles the exporting of files and the

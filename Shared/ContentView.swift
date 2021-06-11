@@ -16,15 +16,20 @@ struct ContentView: View {
     }
     var body: some View {
         GeometryReader { geo in
-            ScrollView([.vertical, .horizontal]) {
-                TreeView(outlinerDocument: document!.wrappedValue)
-                    .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
-                    .toolbar(content: {
-                        Toolbar()
-                    })
-                    .focusable()
-                    .padding()
-            }.onTapGesture {
+            VStack(spacing: 0){
+                DragBar(tree: tree)
+                    .frame(width: geo.size.width, height: 20)
+                ScrollView([.vertical, .horizontal]) {
+                    
+                    TreeView()
+                        .padding()
+                        .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
+                        .toolbar(content: {
+                            Toolbar()
+                        })
+                        .focusable()
+                    
+                }.onTapGesture {
                 document!.wrappedValue.deselectAll()
             }
         }
@@ -69,16 +74,8 @@ func outdentAction() {
     document!.wrappedValue.outdentSelected()
 }
 
-func editAction() {
-    print("Edit")
-}
-
 func toggleAction() {
     document!.wrappedValue.toggleSelected()
-}
-
-func labelAction() {
-    print("Labled")
 }
 
 func colorAction() {
@@ -152,10 +149,6 @@ struct Toolbar: View {
             ActionButton(imageName: "ToggleFamily", title: "Toggle Family", help: "Toggle family", customAction: toggleAction)
                 .shadow(radius: 1)
         }
-        //HStack(alignment: .bottom){
-            //ActionButton(imageName: "pencil", label: "Edit Note", customAction: editAction)
-            //ActionButton(imageName: "label", label: "label", customAction: labelAction)
-        //}
         Spacer()
         HStack(alignment: .bottom){
             ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
