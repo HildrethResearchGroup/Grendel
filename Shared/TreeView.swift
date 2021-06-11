@@ -82,6 +82,10 @@ struct Diagram<V: View>: View {
                                 radius: radius
                             )
                             .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // set stroke of the lines
+                        } else {
+                            NodeHiddenLine(
+                                from: proxy[centers[self.currNode.id]!], parentWidth: widths[self.currNode.depth - 1])
+                                .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3]))
                         }
                     })
                 }
@@ -148,6 +152,45 @@ struct NodeConnectingLine: Shape {
                 }
             }
             p.addLine(to: to)
+        }
+    }
+}
+
+struct NodeHiddenLine: Shape {
+    let offset: CGFloat = 25
+    var parentWidth: CGFloat
+    let radius: CGFloat
+
+    private var _from = CGPoint()
+    var from: CGPoint {
+        get { return _from }
+        set(newValue) { _from = CGPoint(
+            x: newValue.x + parentWidth,
+            y: newValue.y + offset) }
+    }
+
+    init(from: CGPoint, parentWidth: CGFloat, radius: CGFloat = 5) {
+        self.parentWidth = parentWidth
+        self.radius = radius
+        self.from = from
+    }
+    
+    func path(in rect: CGRect) -> Path {
+        Path { p in
+            p.move(to: from)
+            p.addLine(to: CGPoint(
+                        x: from.x + radius,
+                        y: from.y))
+            p.move(to: CGPoint(
+                    x: from.x + radius + radius,
+                    y: from.y - radius))
+            p.addArc(center: CGPoint(
+                        x: from.x + radius + radius,
+                        y: from.y),
+                     radius: radius,
+                     startAngle: Angle(degrees: 270),
+                     endAngle: Angle(degrees: 90),
+                     clockwise: true)
         }
     }
 }
