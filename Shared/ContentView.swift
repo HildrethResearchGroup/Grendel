@@ -7,11 +7,9 @@
 
 import SwiftUI
 
-//Initialize the tree object so that it can be refrenced by all subviews
 var tree: Tree = Tree()
 
 struct ContentView: View {
-    
     @Binding var document: OutlinerDocument
     
     var body: some View {

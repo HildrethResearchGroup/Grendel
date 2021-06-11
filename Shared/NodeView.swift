@@ -7,50 +7,28 @@
 
 import SwiftUI
 
-//Makes the TextEditor background clear so that the background can correctly show through.
-
-extension NSTextView {
-    open override var frame: CGRect {
-        didSet {
-            backgroundColor = .clear //<<here clear
-            drawsBackground = true
-        }
-
-    }
-}
-
 struct NodeView: View {
-    @ObservedObject var node: Node<String>
+    var node: Node<String>
     var ts: Node<String>.TextSettings
+    
     init(node: Node<String>) {
         self.node = node
-        ts = node.textSettings
+        ts = self.node.textSettings
     }
     
-    
-    
-    
-    
     var body: some View {
-
-            TextEditor(text: $node.content)
-                .onChange(of: node.content){value in
-                    if value.contains("\n"){
-                        node.content = value.replacingOccurrences(of: "\n", with: "")
-                    }
-                }
-//            .if(ts.isUnderlined) { view in
-//                view.underline()
-//            }
-
+        Text(node.content)
+            .if(ts.isUnderlined) { view in
+                view.underline()
+            }
+            .padding()
             .font(ts.getFont())
-                .foregroundColor(ts.foregroundColor)
-            .frame(minWidth: nil, idealWidth: 100.0, maxWidth: nil, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
+            .foregroundColor(ts.foregroundColor)
+            .frame(width: 100.0, alignment: .topLeading)
             .background(
                 RoundedRectangle(cornerRadius: 5.0)
                     .fill(ts.highlightColor ?? Color.blue)
             )
-        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
