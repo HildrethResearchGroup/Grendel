@@ -35,41 +35,39 @@ struct NodeView: View {
     }
     
     var body: some View {
-            TextEditor(text: $node.content)
-                .onChange(of: node.content){value in
-                    
-                    //Detects when enter is pressed and takes the user out of the textEditor.
-                    shown = true
-                    if value.contains("\n"){
-                        node.content = value.replacingOccurrences(of: "\n", with: "")
-                        shown = false
-                    }
+        TextEditor(text: $node.content)
+            .onChange(of: node.content){value in
+                
+                //Detects when enter is pressed and takes the user out of the textEditor.
+                shown = true
+                document!.wrappedValue.deselectAll()
+                node.selected = true
+                if value.contains("\n"){
+                    node.content = value.replacingOccurrences(of: "\n", with: "")
+                    shown = false
                 }
+                if value.contains("\t"){
+                    node.content = value.replacingOccurrences(of: "\t", with: "")
+                    shown = false
+                }
+            }
             
-//            .if(ts.isUnderlined) { view in
-//                view.underline()
-//            }
-
+            //            .if(ts.isUnderlined) { view in
+            //                view.underline()
+            //            }
+            
             .font(ts.getFont())
-                .foregroundColor(ts.foregroundColor)
-            .frame(minWidth: nil, idealWidth: 100.0, maxWidth: nil, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
+            .foregroundColor(ts.foregroundColor)
+            .frame(minWidth: nil, idealWidth: 100.0, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
             .background(
                 RoundedRectangle(cornerRadius: 5.0)
-                    .fill(ts.highlightColor ?? Color.blue)
+                    .fill(ts.highlightColor ?? Color.clear)
             )
-        .fixedSize(horizontal: false, vertical: true)
-                .if(!shown){view in
-                    view.disabled(shown)
-                }
+            .fixedSize(horizontal: false, vertical: true)
+            .if(!shown){view in
+                view.disabled(shown)
+            }
         
-    }
-}
-
-struct ViewHeightKey: PreferenceKey {
-    typealias Value = CGFloat
-    static var defaultValue: CGFloat { 0 }
-    static func reduce(value: inout Value, nextValue: () -> Value) {
-        value = value + nextValue()
     }
 }
 

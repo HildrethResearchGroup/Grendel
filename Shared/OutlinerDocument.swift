@@ -23,7 +23,7 @@ class OutlinerDocument: FileDocument, ObservableObject {
             tree = Tree()
             
             // TODO: remove below, was test code only
-            let nodeA = Node<String>(content: "A\n\n\nAAAA\n\n\n\n\n\n\n\n\n\n\nn\n\n\n\n\nA")
+            let nodeA = Node<String>(content: "yes")
             nodeA.textSettings.setWeight(.bold)
             tree.move(nodeA, toParent: tree.rootNode, at: 0)
             let nodeAB = Node<String>(content: "AB")
@@ -46,6 +46,8 @@ class OutlinerDocument: FileDocument, ObservableObject {
             nodeAC.childrenShown = false
             
             selectSingle(node: nodeA)
+            
+            tree.findMaxDepth()
             
     //        print(nodeY.depth)
     //        tree.findMaxDepth()

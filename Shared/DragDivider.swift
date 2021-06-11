@@ -54,6 +54,10 @@ struct DragDivider : View{
                 //Records the current widths of the dividers so that the tree class can space its nodes.
                 tree.currentWidths[dividerNumber] = tree.levelWidths[dividerNumber] + viewState.width
                 
-            })
+            }
+            .onEnded{value in
+                tree.levelWidths = tree.currentWidths
+            }
+        )
     }
 }
