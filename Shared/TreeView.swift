@@ -8,19 +8,32 @@
 import SwiftUI
 
 let widths: Array<CGFloat> = [100, 300, 100, 100, 100, 100, 100]
+// MARK: Drawing consts
+private let radius: CGFloat = 5
+
 
 struct TreeView: View {
+    @ObservedObject var outlinerDocument: OutlinerDocument// = OutlinerDocument()
     var body: some View {
-        let outlinerDocument = OutlinerDocument()
         Diagram(currNode: outlinerDocument.tree.rootNode, makeNodeView: { (value: Node<String>) in
-            NodeView(node: value)
-        }).background(Color.white)
+            NodeView(node: value, width: widths[value.depth - 1], radius: radius)
+                .gesture(TapGesture().modifiers(.command).onEnded {
+                    if value.selected {
+                        outlinerDocument.deselectMultiple(node: value)
+                    } else {
+                            outlinerDocument.selectMultiple(node: value)
+                    }
+                })
+                .onTapGesture {
+                    outlinerDocument.selectSingle(node: value)
+                }
+        })
     }
 }
 
 struct TreeView_Previews: PreviewProvider {
     static var previews: some View {
-        TreeView()
+        TreeView(outlinerDocument: OutlinerDocument())
     }
 }
 
@@ -42,29 +55,40 @@ struct Diagram<V: View>: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 20) {
-            if currNode.depth != 0 {
+            if currNode.depth != 0{
                 makeNodeView(currNode)
                     .anchorPreference(key: Key.self, value: .topLeading, transform: { // the anchor point
                         [self.currNode.id: $0]
                     })
             }
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(currNode.children, id: \.id, content: { child in
-                    Diagram(currNode: child, makeNodeView: self.makeNodeView)
-                })
+            if currNode.childrenShown {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(currNode.children, id: \.id, content: { child in
+                        Diagram(currNode: child, makeNodeView: self.makeNodeView)
+                    })
+                }
             }
         }.backgroundPreferenceValue(Key.self, { (centers: [Node<String>.ID: Anchor<CGPoint>]) in
             if self.currNode.depth != 0 {
                 GeometryReader { proxy in
                     ForEach(self.currNode.children, id: \.id, content: { child in
-                        NodeConnectingLine(
-                            from: proxy[centers[self.currNode.id]!],
-                            to: proxy[centers[child.id]!] ,
-                            firstChild: child.firstChild,
-                            lastChild: child.lastChild,
-                            parentWidth: widths[self.currNode.depth - 1]
-                        )
-                        .stroke(Color.gray, style: StrokeStyle(dash: [2.5])) // set stroke of the lines
+                        if currNode.depth != 0 {
+                            if currNode.childrenShown {
+                                NodeConnectingLine(
+                                    from: proxy[centers[self.currNode.id]!],
+                                    to: proxy[centers[child.id]!] ,
+                                    firstChild: child.firstChild,
+                                    lastChild: child.lastChild,
+                                    parentWidth: widths[self.currNode.depth - 1],
+                                    radius: radius
+                                )
+                                .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // set stroke of the lines
+                            } else {
+                                NodeHiddenLine(
+                                    from: proxy[centers[self.currNode.id]!], parentWidth: widths[self.currNode.depth - 1])
+                                    .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3]))
+                            }
+                        }
                     })
                 }
             }
@@ -73,12 +97,13 @@ struct Diagram<V: View>: View {
 }
 
 struct NodeConnectingLine: Shape {
-    let offset: CGFloat = 13
+    let offset: CGFloat = 25
 
-    init(from: CGPoint, to: CGPoint, firstChild: Bool, lastChild: Bool, parentWidth: CGFloat) {
+    init(from: CGPoint, to: CGPoint, firstChild: Bool, lastChild: Bool, parentWidth: CGFloat, radius: CGFloat = 5) {
         self.firstChild = firstChild
         self.lastChild = lastChild
         self.parentWidth = parentWidth
+        self.radius = radius
         self.to = to
         self.from = from
     }
@@ -101,7 +126,7 @@ struct NodeConnectingLine: Shape {
             x: newValue.x,
             y: newValue.y + offset) }
     }
-    let radius: CGFloat = 5
+    let radius: CGFloat
     var isMiddleChild: Bool = false
     
     func path(in rect: CGRect) -> Path {
@@ -129,6 +154,45 @@ struct NodeConnectingLine: Shape {
                 }
             }
             p.addLine(to: to)
+        }
+    }
+}
+
+struct NodeHiddenLine: Shape {
+    let offset: CGFloat = 25
+    var parentWidth: CGFloat
+    let radius: CGFloat
+
+    private var _from = CGPoint()
+    var from: CGPoint {
+        get { return _from }
+        set(newValue) { _from = CGPoint(
+            x: newValue.x + parentWidth,
+            y: newValue.y + offset) }
+    }
+
+    init(from: CGPoint, parentWidth: CGFloat, radius: CGFloat = 5) {
+        self.parentWidth = parentWidth
+        self.radius = radius
+        self.from = from
+    }
+    
+    func path(in rect: CGRect) -> Path {
+        Path { p in
+            p.move(to: from)
+            p.addLine(to: CGPoint(
+                        x: from.x + radius,
+                        y: from.y))
+            p.move(to: CGPoint(
+                    x: from.x + radius + radius,
+                    y: from.y - radius))
+            p.addArc(center: CGPoint(
+                        x: from.x + radius + radius,
+                        y: from.y),
+                     radius: radius,
+                     startAngle: Angle(degrees: 270),
+                     endAngle: Angle(degrees: 90),
+                     clockwise: true)
         }
     }
 }

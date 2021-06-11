@@ -19,17 +19,42 @@ extension NSTextView {
     }
 }
 
-struct NodeView: View{
+
+struct NodeView: View {
     @ObservedObject var node: Node<String>
     var ts: Node<String>.TextSettings
-    @State var shown:Bool = true
+    var width: CGFloat
+    var radius: CGFloat
     
-    init(node: Node<String>) {
+    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5) {
         self.node = node
-        ts = node.textSettings
+        self.width = width
+        self.radius = radius
+        self.ts = node.textSettings
     }
     
     var body: some View {
+        Text(node.content)
+            .if(ts.isUnderlined) { view in
+                view.underline()
+            }
+            .padding()
+            .font(ts.getFont())
+            .if(ts.foregroundColor != nil) { view in
+                view.foregroundColor(ts.foregroundColor)
+            }
+            .frame(width: width, alignment: .topLeading)
+            .if(!node.selected) {view in
+                view.background(RoundedRectangle(cornerRadius: radius).fill(BackgroundStyle()))
+            }
+            .if(node.selected) { view in
+                view.background(
+                    RoundedRectangle(cornerRadius: radius)
+                        .fill(Color.accentColor)
+                )
+            }
+    }
+}
 
             TextEditor(text: $node.content)
                 .onChange(of: node.content){value in
@@ -57,8 +82,15 @@ struct NodeView: View{
                 .if(!shown){view in
                     view.disabled(shown)
                 }
+
+struct ViewHeightKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue: CGFloat { 0 }
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value = value + nextValue()
     }
 }
+
 
 // allows for easy application of view modifiers based on a condition
 // source: https://www.avanderlee.com/swiftui/conditional-view-modifier/
