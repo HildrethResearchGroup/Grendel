@@ -19,26 +19,29 @@ extension NSTextView {
     }
 }
 
-struct NodeView: View {
+struct NodeView: View{
     @ObservedObject var node: Node<String>
     var ts: Node<String>.TextSettings
+    @State var shown:Bool = true
+    
     init(node: Node<String>) {
         self.node = node
         ts = node.textSettings
     }
     
-    
-    
-    
-    
     var body: some View {
 
             TextEditor(text: $node.content)
                 .onChange(of: node.content){value in
+                    
+                    //Detects when enter is pressed and takes the user out of the textEditor.
+                    shown = true
                     if value.contains("\n"){
                         node.content = value.replacingOccurrences(of: "\n", with: "")
+                        shown = false
                     }
                 }
+            
 //            .if(ts.isUnderlined) { view in
 //                view.underline()
 //            }
@@ -51,6 +54,9 @@ struct NodeView: View {
                     .fill(ts.highlightColor ?? Color.blue)
             )
         .fixedSize(horizontal: false, vertical: true)
+                .if(!shown){view in
+                    view.disabled(shown)
+                }
     }
 }
 
