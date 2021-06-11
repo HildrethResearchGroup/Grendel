@@ -17,11 +17,11 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0){
-                DragBar(tree: tree)
+                DragBar(tree: document!.wrappedValue.tree)
                     .frame(width: geo.size.width, height: 20)
                 ScrollView([.vertical, .horizontal]) {
                     
-                    TreeView()
+                    TreeView(outlinerDocument: document!.wrappedValue)
                         .padding()
                         .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
                         .toolbar(content: {
@@ -35,6 +35,7 @@ struct ContentView: View {
         }
         //.background(Color.white)
     }
+}
 }
 
 //Toolbar functions

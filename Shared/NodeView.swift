@@ -22,6 +22,7 @@ extension NSTextView {
 
 struct NodeView: View {
     @ObservedObject var node: Node<String>
+    @State var shown: Bool = true
     var ts: Node<String>.TextSettings
     var width: CGFloat
     var radius: CGFloat
@@ -34,28 +35,6 @@ struct NodeView: View {
     }
     
     var body: some View {
-        Text(node.content)
-            .if(ts.isUnderlined) { view in
-                view.underline()
-            }
-            .padding()
-            .font(ts.getFont())
-            .if(ts.foregroundColor != nil) { view in
-                view.foregroundColor(ts.foregroundColor)
-            }
-            .frame(width: width, alignment: .topLeading)
-            .if(!node.selected) {view in
-                view.background(RoundedRectangle(cornerRadius: radius).fill(BackgroundStyle()))
-            }
-            .if(node.selected) { view in
-                view.background(
-                    RoundedRectangle(cornerRadius: radius)
-                        .fill(Color.accentColor)
-                )
-            }
-    }
-}
-
             TextEditor(text: $node.content)
                 .onChange(of: node.content){value in
                     
@@ -82,6 +61,9 @@ struct NodeView: View {
                 .if(!shown){view in
                     view.disabled(shown)
                 }
+        
+    }
+}
 
 struct ViewHeightKey: PreferenceKey {
     typealias Value = CGFloat
