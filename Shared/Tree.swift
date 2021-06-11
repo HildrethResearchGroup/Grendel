@@ -9,7 +9,7 @@ import Foundation
 
 class Tree: Codable, ObservableObject {
     // The root node is used as a container for other nodes only, it contains no data, is not rendered,
-    var rootNode = Node<String>(content: "")
+    @Published var rootNode = Node<String>(content: "")
     var selectedLevel: Int? = nil
     @Published var maxDepth: Int = 0
     var levelWidths: [CGFloat] = [100]
@@ -96,12 +96,15 @@ class Tree: Codable, ObservableObject {
     
     // Creates a copy of a node, and copies all of its children and
     func copySubtree(rootOfSubtree: Node<String>) -> Node<String> {
+        //return rootOfSubtree.copyAll()
+        
         // Create a copy of the root of the current subtree
-        let copyOfRootOfSubtree = rootOfSubtree.copy()
+        let copyOfRootOfSubtree = rootOfSubtree.copyAll()
         // Loop through each child of the current subtree
-        rootOfSubtree.children.forEach { childNode in
+        for childNode in rootOfSubtree.children {
+        //rootOfSubtree.children.forEach { childNode in
             // Use a copy of each child of the subtree as the root of a new subtree to copy
-            let copyOfChildNode = copySubtree(rootOfSubtree: childNode.copy())
+            let copyOfChildNode = copySubtree(rootOfSubtree: childNode)
             // Add the complete copy subtree of the copy of the child to the copy of the current subtree
             copyOfRootOfSubtree.insertChild(child: copyOfChildNode, at: copyOfRootOfSubtree.children.endIndex)
         }

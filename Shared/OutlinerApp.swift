@@ -92,7 +92,35 @@ struct OutlinerApp: App {
                     Button("Text"){
                         textAction()
                     }
+                    
+                    
                 }
+                CommandMenu("Selection") {
+                    Button("Select Children") {
+                        selectChildrenAction()
+                    }.keyboardShortcut(KeyEquivalent.rightArrow)
+                    
+                    Button("Select Parents") {
+                        selectParentAction()
+                    }.keyboardShortcut(KeyEquivalent.leftArrow)
+                }
+                CommandGroup(replacing: CommandGroupPlacement.pasteboard, addition: {
+                    Button("Cut") {
+                        cutAction()
+                    }.keyboardShortcut(KeyEquivalent("x"), modifiers: .command)
+                    
+                    Button("Copy") {
+                        copyAction()
+                    }.keyboardShortcut(KeyEquivalent("c"), modifiers: .command)
+                    
+                    Button("Paste") {
+                        pasteAction()
+                    }.keyboardShortcut(KeyEquivalent("v"), modifiers: .command)
+                    
+                    Button("Duplicate") {
+                        duplicateAction()
+                    }.keyboardShortcut(KeyEquivalent("d"), modifiers: .command)
+                })
             }
         }
     }

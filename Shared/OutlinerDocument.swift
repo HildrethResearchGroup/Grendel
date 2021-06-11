@@ -167,12 +167,36 @@ class OutlinerDocument: FileDocument, ObservableObject {
             for selectedNode in selectedArray {
                 if childNode.parent!.id == selectedNode.id {
                     contains = true
+                    break
                 }
             }
             return contains
         }, modifyingFunc: {childNode in
+            tree.selectedLevel = childNode.depth
             childNode.selected = true
-        }, minDepth: 1)
+        }, minDepth: (tree.selectedLevel != nil && tree.selectedLevel! > 1 ? tree.selectedLevel! : 1), maxDepth: tree.selectedLevel)
+    }
+    
+    func selectAllParentsOfSelected() {
+        if tree.selectedLevel == 1 {
+            print("Alert: can't select parent of left most level")
+            return
+        }
+        let selectedArray = tree.getSelectedArray()
+        deselectAll()
+        tree.applyFuncToNodes(filter: {childNode in
+            var contains = false
+            for selectedNode in selectedArray {
+                if childNode.id == selectedNode.id {
+                    contains = true
+                    break
+                }
+            }
+            return contains
+        }, modifyingFunc: {childNode in
+            childNode.parent!.selected = true
+            tree.selectedLevel = childNode.parent!.depth
+        }, minDepth: (tree.selectedLevel != nil && tree.selectedLevel! > 1 ? tree.selectedLevel! : 1), maxDepth: tree.selectedLevel)
     }
     
     // Move a node and all its children to be under a new parent
@@ -214,25 +238,41 @@ class OutlinerDocument: FileDocument, ObservableObject {
     
     // Duplicate selected nodes and place above
     func duplicateSelected() {
+        objectWillChange.send()
+        copyNodesSelected()
+        pasteNodesSelected()
+//        let selectedNodes = tree.getSelectedArray()
+//
+//        // Insert all above the first selected node
+//        for selectedNode in selectedNodes {
+//            let copyOfSelectedNode = selectedNode.copy()
+//            moveAbove(movingNode: copyOfSelectedNode, belowNode: selectedNodes.first!)
+//            selectedNode.selected = false
+//            copyOfSelectedNode.selected = true
+//        }
+    }
+    
+    func generateTreeStringSelected() -> String {
+        var treeString = ""
         let selectedNodes = tree.getSelectedArray()
-        
-        // Insert all above the first selected node
-        for selectedNode in selectedNodes {
-            let copyOfSelectedNode = selectedNode.copy()
-            moveAbove(movingNode: copyOfSelectedNode, belowNode: selectedNodes.first!)
-            selectedNode.selected = false
-            copyOfSelectedNode.selected = true
+        for selNode in selectedNodes {
+            treeString += generateTreeString(root: selNode)
+            treeString += "\n"
         }
+        
+        return treeString
     }
     
     func newline(createUnder: Bool = true) {
         objectWillChange.send()
         let newNode = Node<String>(content: "")
         let selectedNodes = tree.getSelectedArray()
-        if selectedNodes.count != 1 {
+        if selectedNodes.count != 1 && tree.rootNode.children.count > 0 {
             print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
         } else {
-            if createUnder {
+            if tree.rootNode.children.count == 0 {
+                move(node: newNode, toParent: tree.rootNode, at: 0)
+            } else if createUnder {
                 moveUnder(movingNode: newNode, aboveNode: selectedNodes.first!)
             } else {
                 moveAbove(movingNode: newNode, belowNode: selectedNodes.first!)
@@ -271,6 +311,14 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
+    func cutNodesSelected() {
+        objectWillChange.send()
+        nodeCopyBuffer.removeAll()
+        copyNodesSelected()
+        //toggleSelected()
+        deleteSelected()
+    }
+    
     // TODO: copy
     func copyNodesSelected() {
         nodeCopyBuffer.removeAll()
@@ -282,6 +330,7 @@ class OutlinerDocument: FileDocument, ObservableObject {
     
     // TODO: paste
     func pasteNodesSelected() {
+        objectWillChange.send()
         tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in
             node.selected = false
             for pasteNode in nodeCopyBuffer {

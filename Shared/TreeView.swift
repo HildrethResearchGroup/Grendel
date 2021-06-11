@@ -72,20 +72,22 @@ struct Diagram<V: View>: View {
             if self.currNode.depth != 0 {
                 GeometryReader { proxy in
                     ForEach(self.currNode.children, id: \.id, content: { child in
-                        if currNode.childrenShown {
-                            NodeConnectingLine(
-                                from: proxy[centers[self.currNode.id]!],
-                                to: proxy[centers[child.id]!] ,
-                                firstChild: child.firstChild,
-                                lastChild: child.lastChild,
-                                parentWidth: widths[self.currNode.depth - 1],
-                                radius: radius
-                            )
-                            .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // set stroke of the lines
-                        } else {
-                            NodeHiddenLine(
-                                from: proxy[centers[self.currNode.id]!], parentWidth: widths[self.currNode.depth - 1])
-                                .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3]))
+                        if currNode.depth != 0 {
+                            if currNode.childrenShown {
+                                NodeConnectingLine(
+                                    from: proxy[centers[self.currNode.id]!],
+                                    to: proxy[centers[child.id]!] ,
+                                    firstChild: child.firstChild,
+                                    lastChild: child.lastChild,
+                                    parentWidth: widths[self.currNode.depth - 1],
+                                    radius: radius
+                                )
+                                .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // set stroke of the lines
+                            } else {
+                                NodeHiddenLine(
+                                    from: proxy[centers[self.currNode.id]!], parentWidth: widths[self.currNode.depth - 1])
+                                    .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3]))
+                            }
                         }
                     })
                 }

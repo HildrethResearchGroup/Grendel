@@ -9,8 +9,8 @@ import SwiftUI
 
 class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     var content: Content
-    var textSettings: TextSettings = TextSettings()
-    private(set) var children = Array<Node>()
+    @Published var textSettings: TextSettings = TextSettings()
+    @Published private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
     @Published var selected: Bool = false
@@ -34,6 +34,12 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         self.content = content
     }
     
+    private init(content: Content, textSettings: TextSettings, childrenShown: Bool) {
+        self.content = content
+        self.textSettings = textSettings
+        self.childrenShown = childrenShown
+    }
+    
     // MARK: modify node
     func insertChild(child: Node, at insertIndex: Int) {
         children.insert(child, at: insertIndex)
@@ -48,6 +54,18 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     
     func copy() -> Node {
         return Node(content: content)
+    }
+    
+    func copyAll() -> Node {
+        var copiedChildren = Array<Node>()
+        
+        for child in children {
+            copiedChildren.append(child.copyAll())
+        }
+        
+        return Node(content: self.content,
+                    textSettings: self.textSettings,
+                    childrenShown: self.childrenShown)
     }
     
     func getParent() -> Node{

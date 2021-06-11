@@ -89,6 +89,38 @@ func textAction() {
     print("Change font")
 }
 
+func cutAction() {
+    document!.wrappedValue.cutNodesSelected()
+}
+
+func copyAction() {
+    document!.wrappedValue.copyNodesSelected()
+}
+
+func pasteAction() {
+    document!.wrappedValue.pasteNodesSelected()
+}
+
+func duplicateAction() {
+    document!.wrappedValue.duplicateSelected()
+}
+
+func selectAboveAction() {
+    
+}
+
+func selectBelowAction() {
+    
+}
+
+func selectChildrenAction() {
+    document!.wrappedValue.selectAllChildrenOfSelected()
+}
+
+func selectParentAction() {
+    document!.wrappedValue.selectAllParentsOfSelected()
+}
+
 struct Toolbar: View {
     @State private var view = 0
     var body: some View {
@@ -203,12 +235,4 @@ struct ViewPicker: View {
         }
     }
 }
-
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        //@Binding var doc = OutlinerDocument()
-//        //ContentView(<#Binding<OutlinerDocument>#>)
-//            
-//    }
-//}
 
