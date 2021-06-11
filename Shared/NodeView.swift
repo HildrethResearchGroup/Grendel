@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+//Makes the TextEditor background clear so that the background can correctly show through.
+
+extension NSTextView {
+    open override var frame: CGRect {
+        didSet {
+            backgroundColor = .clear //<<here clear
+            drawsBackground = true
+        }
+
+    }
+}
+
+
 struct NodeView: View {
     @ObservedObject var node: Node<String>
     var ts: Node<String>.TextSettings
@@ -43,6 +56,33 @@ struct NodeView: View {
     }
 }
 
+            TextEditor(text: $node.content)
+                .onChange(of: node.content){value in
+                    
+                    //Detects when enter is pressed and takes the user out of the textEditor.
+                    shown = true
+                    if value.contains("\n"){
+                        node.content = value.replacingOccurrences(of: "\n", with: "")
+                        shown = false
+                    }
+                }
+            
+//            .if(ts.isUnderlined) { view in
+//                view.underline()
+//            }
+
+            .font(ts.getFont())
+                .foregroundColor(ts.foregroundColor)
+            .frame(minWidth: nil, idealWidth: 100.0, maxWidth: nil, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
+            .background(
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(ts.highlightColor ?? Color.blue)
+            )
+        .fixedSize(horizontal: false, vertical: true)
+                .if(!shown){view in
+                    view.disabled(shown)
+                }
+
 struct ViewHeightKey: PreferenceKey {
     typealias Value = CGFloat
     static var defaultValue: CGFloat { 0 }
@@ -51,11 +91,6 @@ struct ViewHeightKey: PreferenceKey {
     }
 }
 
-struct NodeView_Previews: PreviewProvider {
-    static var previews: some View {
-        NodeView(node: Node<String>(content: "Hello World"), width: 100)
-    }
-}
 
 // allows for easy application of view modifiers based on a condition
 // source: https://www.avanderlee.com/swiftui/conditional-view-modifier/
