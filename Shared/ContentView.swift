@@ -28,6 +28,7 @@ struct ContentView: View {
                         .focusable()
                     
                 }
+                //ColorControls()
             }
         }
         //.background(Color.white)
@@ -101,11 +102,41 @@ func labelAction() {
 }
 
 func colorAction() {
-    print("Colored")
+//    //ColorControls()
+//    var body: some View {
+//        Button
+//        Menu {
+//            Button(action: {}, label: {
+//                Image("Colors", label: Text("here"))
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 25.0, height: 25.0)
+//            })
+//            .help("test")
+//        }
+//    }
 }
 
 func textAction() {
     print("Change font")
+}
+
+// Text Editing Functions
+
+func boldAction() {
+    print("Bold node")
+}
+
+func italicAction() {
+    print("Italic node")
+}
+
+func underlineAction() {
+    print("Underline node")
+}
+
+func strikeAction() {
+    print("Strikethrough node")
 }
 
 struct Toolbar: View {
@@ -113,11 +144,6 @@ struct Toolbar: View {
     var body: some View {
         // main buttons to modify the model
         //FIXME: Enter doesn't work in full screen
-//        ActionPicker(imageNames: ["ListView", "TreeView"], labels: ["List View", "Tree View"], customAction: viewAction)
-//        HStack(alignment: .center) {
-//            ActionButton(imageName: "ListView", label: "List View", customAction: viewAction)
-//            ActionButton(imageName: "TreeView", label: "Tree View", customAction: viewAction)
-//        }
         ViewPicker()
         Spacer()
         HStack(alignment: .center) {
@@ -139,14 +165,11 @@ struct Toolbar: View {
             ActionButton(imageName: "ToggleFamily", title: "Toggle Family", help: "Toggle family", customAction: toggleAction)
                 .shadow(radius: 1)
         }
-        //HStack(alignment: .bottom){
-            //ActionButton(imageName: "pencil", label: "Edit Note", customAction: editAction)
-            //ActionButton(imageName: "label", label: "label", customAction: labelAction)
-        //}
         Spacer()
         HStack(alignment: .bottom){
             ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
-            ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
+            //ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
+            TextMenu()
         }
     }
 }
@@ -180,6 +203,55 @@ struct ActionButton: View {
 }
 
 /**
+ TextMenu is the struct used to create the text formatting menu to bold, italicize, underline, and strikethrough text.
+ */
+struct TextMenu: View {
+    var body: some View {
+        Menu {
+            Button(action: boldAction) {
+                Label("Bold", image: "Bold")
+            }
+            Button(action: italicAction) {
+                Label("Italic", image: "Italic")
+            }
+            Button(action: underlineAction) {
+                Label("Underline", image: "Underline")
+            }
+            Button(action: strikeAction) {
+                Label("Strikethrough", image: "Strike")
+            }
+        } label: {
+            Image("Text", label: Text("Text"))
+                .resizable()
+                .scaledToFit()
+                .frame(width: 25.0, height: 25.0)
+        }
+        .help("Choose text style")
+    }
+}
+
+//struct ColorButton: View {
+//    var imageName: String
+//    var title: String
+//    var help: String
+//
+//    @State private var showingControls = false
+//
+//    var body: some View {
+//        Button(action: showingControls.toggle(), label: {
+//            Image(imageName, label: Text(title))
+//                .resizable()
+//                .scaledToFit()
+//                .frame(width: 25.0, height: 25.0)
+//        })
+//        .help(help)
+//        .sheet(isPresented: $showingControls) {
+//            ColorControls()
+//        }
+//    }
+//}
+
+/**
  ViewPicker is the struct used to create toolbar segmented controls for viewing the document as a tree or list.
  */
 struct ViewPicker: View {
@@ -210,18 +282,40 @@ struct ViewPicker: View {
                     .scaledToFit()
                     .frame(width: 25.0, height: 25.0)
                     .tag(ViewNotes.tree)
-                    .help("View notes as tree") /// TODO: fix why the help tags don't display in the picker?
+                    //.help("View notes as tree") /// FIXME: why don't the help tags don't display for each option?
                 Image("ListView", label: Text("List View"))
                     .resizable()
                     .scaledToFit()
                     .frame(width: 25.0, height: 25.0)
                     .tag(ViewNotes.list)
-                    .help("View notes as list")
+                    //.help("View notes as list")
             }
             .pickerStyle(SegmentedPickerStyle())
+            .help("View notes as tree or list")
         }
     }
 }
+
+struct ColorControls: View {
+    @State private var selectedColor = Color.black
+    
+    var body: some View {
+      VStack(alignment: .center) {
+        Text("Color Picker Demo").foregroundColor(selectedColor).font(.largeTitle)
+        ColorPicker(
+          "Pick a color",
+          selection: $selectedColor
+        )//.frame(width: 150, height: 150)
+        Spacer()
+      }.padding(.vertical, 70)
+    }
+}
+
+//struct TextControls: View {
+//    var body: some View {
+//
+//    }
+//}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
