@@ -43,8 +43,6 @@ class TreeTests: XCTestCase {
         tree.indent(node: tree.rootNode.children[1])
         
         XCTAssert(tree.rootNode.children[0].children[3].content == "B", "Indent not working correctly, node name was " + tree.rootNode.children[0].children[3].content)
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
     func testOutdent() throws{

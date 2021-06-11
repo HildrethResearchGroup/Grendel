@@ -8,7 +8,7 @@
 import SwiftUI
 
 class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
-    var content: Content
+    @Published var content: Content
     var textSettings: TextSettings = TextSettings()
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
