@@ -42,10 +42,7 @@ func listViewAction() {
 }
 
 func deleteAction() {
-//    let selected = tree.getSelectedArray()
-//    for node in selected{
-//        node.getParent().removeChild(child: node)
-//    }
+    document!.wrappedValue.deleteSelected()
 }
 
 func addItemAction() {

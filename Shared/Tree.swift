@@ -109,6 +109,10 @@ class Tree: Codable, ObservableObject {
         return copyOfRootOfSubtree
     }
     
+    func deleteNode(node: Node<String>) {
+        node.parent!.removeChild(child: node)
+    }
+    
     // MARK: Utility functions
     func applyFuncToNodes(filter: (Node<String>) -> Bool, modifyingFunc: (Node<String>) -> Void, minDepth: Int? = nil, maxDepth: Int? = nil, reverse: Bool = false) {
         applyFuncToNodesRecursive(currNode: rootNode, filter: filter, modifyingFunc: modifyingFunc, minDepth: minDepth, maxDepth: maxDepth, reverse: reverse)

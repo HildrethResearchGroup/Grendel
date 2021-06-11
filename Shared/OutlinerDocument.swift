@@ -251,6 +251,11 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
+    func deleteSelected() {
+        objectWillChange.send()
+        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in tree.deleteNode(node: node)})
+    }
+    
     // Toggle family
     func toggleSelected() {
         objectWillChange.send()
