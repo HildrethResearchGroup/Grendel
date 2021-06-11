@@ -14,16 +14,17 @@ extension UTType {
     }
 }
 
-struct OutlinerDocument: FileDocument {
+class OutlinerDocument: FileDocument, ObservableObject {
     
-    var tree: Tree
+    @Published var tree: Tree
     var nodeCopyBuffer = Array<Node<String>>()
 
         init() {
             tree = Tree()
             
             // TODO: remove below, was test code only
-            let nodeA = Node<String>(content: "A")
+            let nodeA = Node<String>(content: "A\n\n\nAAAA\n\n\n\n\n\n\n\n\n\n\nn\n\n\n\n\nA")
+            nodeA.textSettings.setWeight(.bold)
             tree.move(nodeA, toParent: tree.rootNode, at: 0)
             let nodeAB = Node<String>(content: "AB")
             tree.move(nodeAB, toParent: nodeA, at: 0)
@@ -41,6 +42,10 @@ struct OutlinerDocument: FileDocument {
             tree.move(nodeX, toParent: nodeB, at: 0)
             let nodeY = Node<String>(content: "Y")
             tree.move(nodeY, toParent: nodeX, at: 0)
+            
+            nodeAC.childrenShown = false
+            
+            selectSingle(node: nodeA)
             
     //        print(nodeY.depth)
     //        tree.findMaxDepth()
@@ -64,7 +69,7 @@ struct OutlinerDocument: FileDocument {
     
     static var readableContentTypes: [UTType] { [.treeType] }
     
-    init(configuration: ReadConfiguration) throws {
+    required init(configuration: ReadConfiguration) throws {
         guard let data = configuration.file.regularFileContents else {
             throw CocoaError(.fileReadCorruptFile)
         }
@@ -120,7 +125,7 @@ struct OutlinerDocument: FileDocument {
     
     // Deselect all nodes
     func deselectAll() {
-        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in node.selected = false})
+        tree.applyFuncToNodes(filter: {node in true}, modifyingFunc: {node in node.selected = false})
         tree.selectedLevel = nil
     }
     
@@ -153,6 +158,23 @@ struct OutlinerDocument: FileDocument {
         tree.applyFuncToNodes(filter: {node in tree.selectedLevel == node.depth}, modifyingFunc: {node in node.selected = true}, maxDepth: tree.selectedLevel)
     }
     
+    // Select all children nodes of selected nodes
+    func selectAllChildrenOfSelected() {
+        let selectedArray = tree.getSelectedArray()
+        deselectAll()
+        tree.applyFuncToNodes(filter: {childNode in
+            var contains = false
+            for selectedNode in selectedArray {
+                if childNode.parent!.id == selectedNode.id {
+                    contains = true
+                }
+            }
+            return contains
+        }, modifyingFunc: {childNode in
+            childNode.selected = true
+        }, minDepth: 1)
+    }
+    
     // Move a node and all its children to be under a new parent
     func move(node: Node<String>, toParent: Node<String>, at insertIndex: Int) {
         tree.move(node, toParent: toParent, at: insertIndex)
@@ -172,6 +194,7 @@ struct OutlinerDocument: FileDocument {
     
     // Indent all selected nodes
     func indentSelected() {
+        objectWillChange.send()
         tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in tree.indent(node: node)})
         // Increment the selected level to the match
         if tree.selectedLevel != nil {
@@ -181,6 +204,7 @@ struct OutlinerDocument: FileDocument {
     
     // Outdent all selected nodes
     func outdentSelected() {
+        objectWillChange.send()
         tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in tree.outdent(node: node)}, reverse: true)
         // Decrement to match the new selected level
         if tree.selectedLevel != nil {
@@ -201,22 +225,49 @@ struct OutlinerDocument: FileDocument {
         }
     }
     
-    func newline(createUnder: Bool = false) {
+    func newline(createUnder: Bool = true) {
+        objectWillChange.send()
         let newNode = Node<String>(content: "")
-        let selectedNode = tree.getSelectedArray()
-        if selectedNode.count != 1 {
-            print("Alert: couldn't add new line with \(selectedNode.count) nodes selected")
+        let selectedNodes = tree.getSelectedArray()
+        if selectedNodes.count != 1 {
+            print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
         } else {
             if createUnder {
-                moveUnder(movingNode: newNode, aboveNode: selectedNode.first!)
+                moveUnder(movingNode: newNode, aboveNode: selectedNodes.first!)
             } else {
-                moveAbove(movingNode: newNode, belowNode: selectedNode.first!)
+                moveAbove(movingNode: newNode, belowNode: selectedNodes.first!)
             }
         }
     }
     
+    func newchild() {
+        objectWillChange.send()
+        let newNode = Node<String>(content: "")
+        let selectedNodes = tree.getSelectedArray()
+        if selectedNodes.count != 1 {
+            print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
+        } else {
+            move(node: newNode, toParent: selectedNodes.first!, at: selectedNodes.first!.children.endIndex)
+        }
+    }
+    
+    // Toggle family
+    func toggleSelected() {
+        objectWillChange.send()
+        let selectedNodes = tree.getSelectedArray()
+        var setShow = true
+        for selNode in selectedNodes {
+            if selNode.childrenShown {
+                setShow = false
+            }
+        }
+        for selNode in selectedNodes {
+            selNode.childrenShown = setShow
+        }
+    }
+    
     // TODO: copy
-    mutating func copyNodesSelected() {
+    func copyNodesSelected() {
         nodeCopyBuffer.removeAll()
         let selectedNodes = tree.getSelectedArray()
         for selectedNode in selectedNodes {

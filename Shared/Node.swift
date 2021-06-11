@@ -13,7 +13,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     private(set) var children = Array<Node>()
     private(set) var parent: Node? = nil
     let id = UUID()
-    var selected: Bool = false
+    @Published var selected: Bool = false
     @Published var childrenShown: Bool = true
     var depth: Int {
         switch parent {
@@ -111,7 +111,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         private(set) var weight: Font.Weight
         private(set) var isItalicized: Bool
         private(set) var isUnderlined: Bool
-        private(set) var foregroundColor: Color
+        private(set) var foregroundColor: Color?
         private(set) var highlightColor: Color?
         
         // font is private to force users to use getFont() which applies formatting on call
@@ -121,7 +121,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
             weight = .regular
             isItalicized = false
             isUnderlined = false
-            foregroundColor = .black
+            foregroundColor = nil
             highlightColor = nil
             font = .system(.body)
         }
@@ -174,4 +174,12 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
             font = .system(.body)
         }
     }
+}
+
+extension Node: Equatable {
+    static func == (lhs: Node<Content>, rhs: Node<Content>) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    
 }

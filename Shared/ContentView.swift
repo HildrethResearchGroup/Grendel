@@ -7,24 +7,28 @@
 
 import SwiftUI
 
-var tree: Tree = Tree()
+var document: Binding<OutlinerDocument>?
 
 struct ContentView: View {
-    @Binding var document: OutlinerDocument
     
+    init(_ doc: Binding<OutlinerDocument>) {
+        document = doc
+    }
     var body: some View {
         GeometryReader { geo in
             ScrollView([.vertical, .horizontal]) {
-                TreeView()
+                TreeView(outlinerDocument: document!.wrappedValue)
                     .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
                     .toolbar(content: {
                         Toolbar()
                     })
                     .focusable()
                     .padding()
+            }.onTapGesture {
+                document!.wrappedValue.deselectAll()
             }
         }
-        .background(Color.white)
+        //.background(Color.white)
     }
 }
 
@@ -38,45 +42,34 @@ func listViewAction() {
 }
 
 func deleteAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        node.getParent().removeChild(child: node)
-    }
+//    let selected = tree.getSelectedArray()
+//    for node in selected{
+//        node.getParent().removeChild(child: node)
+//    }
 }
 
 func addItemAction() {
-    if(tree.getNumSelected() != 1){
-        print("Could not add Node")
-    }else{
-        let selected = tree.getSelectedArray()[0]
-        let tempNode = Node<String>(content: "")
-        tree.move(tempNode, toParent: selected.getParent(), at: 0)
-    }
-    
+    print("newline shenanigans")
+    document!.wrappedValue.newline()
+//    if(tree.getNumSelected() != 1){
+//        print("Could not add Node")
+//    }else{
+//        let selected = tree.getSelectedArray()[0]
+//        let tempNode = Node<String>(content: "")
+//        tree.move(tempNode, toParent: selected.getParent(), at: 0)
+//    }
 }
 
 func addChildAction() {
-    if(tree.getNumSelected() != 1){
-        print("Could not add Child Node")
-    }else{
-        let selected = tree.getSelectedArray()[0]
-        let tempNode = Node<String>(content: "")
-        tree.move(tempNode, toParent: selected, at: 0)
-    }
+    document!.wrappedValue.newchild()
 }
 
 func indentAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        tree.indent(node: node)
-    }
+    document!.wrappedValue.indentSelected()
 }
 
 func outdentAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        tree.outdent(node: node)
-    }
+    document!.wrappedValue.outdentSelected()
 }
 
 func editAction() {
@@ -84,10 +77,7 @@ func editAction() {
 }
 
 func toggleAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        node.childrenShown = false
-    }
+    document!.wrappedValue.toggleSelected()
 }
 
 func labelAction() {
@@ -217,10 +207,11 @@ struct ViewPicker: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView(document: .constant(OutlinerDocument()))
-            
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        //@Binding var doc = OutlinerDocument()
+//        //ContentView(<#Binding<OutlinerDocument>#>)
+//            
+//    }
+//}
 

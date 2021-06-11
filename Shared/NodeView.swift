@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct NodeView: View {
-    var node: Node<String>
+    @ObservedObject var node: Node<String>
     var ts: Node<String>.TextSettings
+    var width: CGFloat
+    var radius: CGFloat
     
-    init(node: Node<String>) {
+    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5) {
         self.node = node
-        ts = self.node.textSettings
+        self.width = width
+        self.radius = radius
+        self.ts = node.textSettings
     }
     
     var body: some View {
@@ -23,12 +27,33 @@ struct NodeView: View {
             }
             .padding()
             .font(ts.getFont())
-            .foregroundColor(ts.foregroundColor)
-            .frame(width: 100.0, alignment: .topLeading)
-            .background(
-                RoundedRectangle(cornerRadius: 5.0)
-                    .fill(ts.highlightColor ?? Color.blue)
-            )
+            .if(ts.foregroundColor != nil) { view in
+                view.foregroundColor(ts.foregroundColor)
+            }
+            .frame(width: width, alignment: .topLeading)
+            .if(!node.selected) {view in
+                view.background(RoundedRectangle(cornerRadius: radius).fill(BackgroundStyle()))
+            }
+            .if(node.selected) { view in
+                view.background(
+                    RoundedRectangle(cornerRadius: radius)
+                        .fill(Color.accentColor)
+                )
+            }
+    }
+}
+
+struct ViewHeightKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue: CGFloat { 0 }
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value = value + nextValue()
+    }
+}
+
+struct NodeView_Previews: PreviewProvider {
+    static var previews: some View {
+        NodeView(node: Node<String>(content: "Hello World"), width: 100)
     }
 }
 

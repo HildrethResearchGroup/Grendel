@@ -13,46 +13,7 @@ struct OutlinerApp: App {
     var body: some Scene {
         DocumentWindow()
             .windowToolbarStyle(UnifiedWindowToolbarStyle(showsTitle: false))
-            .commands{
-                CommandMenu("Editor"){
-                    Button("Delete"){
-                        deleteAction()
-                    }.keyboardShortcut(.delete, modifiers: [.shift])
-                    
-                    Button("Add Item"){
-                        addItemAction()
-                    }.keyboardShortcut(.return, modifiers: [])
-                    
-                    Button("Add Child"){
-                        addChildAction()
-                    }.keyboardShortcut(.return, modifiers: [.shift])
-                    
-                    Button("Indent"){
-                        indentAction()
-                    }.keyboardShortcut(.tab, modifiers: [])
-                    
-                    Button("Outdent"){
-                        outdentAction()
-                    }.keyboardShortcut(.tab, modifiers: [.shift])
-                }
-                CommandMenu("Node"){
-                    Button("Edit Node"){
-                        editAction()
-                    }
-                    
-                    Button("Toggle Children"){
-                        toggleAction()
-                    }
-                    
-                    Button("Highlight"){
-                        labelAction()
-                    }
-                    
-                    Button("Text"){
-                        textAction()
-                    }
-                }
-            }
+            
     }
     
     // Custom scene that handles the exporting of files and the
@@ -63,7 +24,7 @@ struct OutlinerApp: App {
         
         var body : some Scene {
             DocumentGroup(newDocument: OutlinerDocument()) { file in
-                ContentView(document: file.$document)
+                ContentView(file.$document)
                     .onReceive(exportCommand) { _ in
                         do {
                             // get the name of the file, including extension
