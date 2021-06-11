@@ -7,11 +7,13 @@
 
 import SwiftUI
 
-var tree: Tree = Tree()
+var document: Binding<OutlinerDocument>?
 
 struct ContentView: View {
-    @Binding var document: OutlinerDocument
     
+    init(_ doc: Binding<OutlinerDocument>) {
+        document = doc
+    }
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0){
@@ -27,7 +29,8 @@ struct ContentView: View {
                         })
                         .focusable()
                     
-                }
+                }.onTapGesture {
+                document!.wrappedValue.deselectAll()
             }
         }
         //.background(Color.white)
@@ -44,52 +47,35 @@ func listViewAction() {
 }
 
 func deleteAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        node.getParent().removeChild(child: node)
-    }
+    document!.wrappedValue.deleteSelected()
 }
 
 func addItemAction() {
-    if(tree.getNumSelected() != 1){
-        print("Could not add Node")
-    }else{
-        let selected = tree.getSelectedArray()[0]
-        let tempNode = Node<String>(content: "")
-        tree.move(tempNode, toParent: selected.getParent(), at: 0)
-    }
-    
+    print("newline shenanigans")
+    document!.wrappedValue.newline()
+//    if(tree.getNumSelected() != 1){
+//        print("Could not add Node")
+//    }else{
+//        let selected = tree.getSelectedArray()[0]
+//        let tempNode = Node<String>(content: "")
+//        tree.move(tempNode, toParent: selected.getParent(), at: 0)
+//    }
 }
 
 func addChildAction() {
-    if(tree.getNumSelected() != 1){
-        print("Could not add Child Node")
-    }else{
-        let selected = tree.getSelectedArray()[0]
-        let tempNode = Node<String>(content: "")
-        tree.move(tempNode, toParent: selected, at: 0)
-    }
+    document!.wrappedValue.newchild()
 }
 
 func indentAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        tree.indent(node: node)
-    }
+    document!.wrappedValue.indentSelected()
 }
 
 func outdentAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        tree.outdent(node: node)
-    }
+    document!.wrappedValue.outdentSelected()
 }
 
 func toggleAction() {
-    let selected = tree.getSelectedArray()
-    for node in selected{
-        node.childrenShown = false
-    }
+    document!.wrappedValue.toggleSelected()
 }
 
 func colorAction() {
@@ -98,6 +84,38 @@ func colorAction() {
 
 func textAction() {
     print("Change font")
+}
+
+func cutAction() {
+    document!.wrappedValue.cutNodesSelected()
+}
+
+func copyAction() {
+    document!.wrappedValue.copyNodesSelected()
+}
+
+func pasteAction() {
+    document!.wrappedValue.pasteNodesSelected()
+}
+
+func duplicateAction() {
+    document!.wrappedValue.duplicateSelected()
+}
+
+func selectAboveAction() {
+    
+}
+
+func selectBelowAction() {
+    
+}
+
+func selectChildrenAction() {
+    document!.wrappedValue.selectAllChildrenOfSelected()
+}
+
+func selectParentAction() {
+    document!.wrappedValue.selectAllParentsOfSelected()
 }
 
 struct Toolbar: View {
@@ -208,13 +226,6 @@ struct ViewPicker: View {
             }
             .pickerStyle(SegmentedPickerStyle())
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView(document: .constant(OutlinerDocument()))
-            
     }
 }
 
