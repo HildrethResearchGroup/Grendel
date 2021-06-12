@@ -176,8 +176,8 @@ struct Toolbar: View {
         HStack(alignment: .center){
 //            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
             //ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
-            //ColorMenu()
             TextMenu()
+            ColorMenu()
         }
     }
 }
@@ -211,30 +211,86 @@ struct ActionButton: View {
 }
 
 struct ColorMenu: View {
-    @State private var selection = "Red"
-    let colors = ["Red", "Green", "Blue", "Black", "Tartan"]
+    @State private var showingPopover = false
+    @State private var selection = "Default"
+    
+    let swatches = [
+        "Watermelon",
+        "Pomegranate",
+        "Plum",
+        "Grape",
+        "Blackberry",
+        "Blueberry",
+        "Sky",
+        "RobinEgg",
+        "CopperPatina",
+        "Avocado",
+        "GreenApple",
+        "Lime",
+        "Banana",
+        "Mango",
+        "Tangerine",
+        "Persimmon",
+        "Default",
+        "LittleGray",
+        "BigGray",
+        "Inverted"
+    ]
 
+    let columns = [
+        GridItem(.fixed(25), spacing: 5),
+        GridItem(.fixed(25), spacing: 5),
+        GridItem(.fixed(25), spacing: 5),
+        GridItem(.fixed(25), spacing: 5)
+    ]
+    
     var body: some View {
-        VStack {
-            Picker(selection: $selection, label: Text("h")) {
-                ForEach(0 ..< colors.count) { (i) in
-                    HStack {
-                        //Image(systemName: self.colors[i])
-                        Image("Text")
-                        Text(self.colors[i])
-                    }.tag(i)
+        Button(action: {
+                showingPopover = true
+        }) {
+            Image("Colors", label: Text("Colors"))
+                .resizable()
+                .scaledToFit()
+                .frame(width: 25.0, height: 25.0)
+        }
+        .popover(isPresented: $showingPopover) {
+            LazyVGrid(columns: columns, spacing: 5) {
+                ForEach(swatches, id: \.self){ swatch in
+                    Button(action: {
+                        selection = swatch
+                    }, label: {
+                        ZStack {
+                            Circle()
+                                .fill(Color(swatch))
+                                .frame(width: 21, height: 21)
+                                .padding(5)
+                            
+                            if selection == swatch {
+                                Circle()
+                                    .stroke(Color(swatch), lineWidth: 2)
+                                    .frame(width: 25, height: 25)
+                            }
+                        }
+                    })
+                    .buttonStyle(BorderlessButtonStyle())
                 }
             }
-//            } label: {
-//                Image("Text", label: Text("Text"))
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(width: 25.0, height: 25.0)
-//            }
-            .pickerStyle(MenuPickerStyle())
-
-            //Text("Selected color: \(selection)")
+            .padding()
         }
+        .help("Choose text color")
+    }
+}
+
+struct ColorSwatch: ButtonStyle {
+    var swatch: String
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding()
+            .background(Color(swatch))
+            .foregroundColor(.white)
+            .clipShape(Circle())
+            .scaleEffect(configuration.isPressed ? 1.2 : 1)
     }
 }
 
@@ -270,27 +326,6 @@ struct TextMenu: View {
         .help("Choose text style")
     }
 }
-
-//struct ColorButton: View {
-//    var imageName: String
-//    var title: String
-//    var help: String
-//
-//    @State private var showingControls = false
-//
-//    var body: some View {
-//        Button(action: showingControls.toggle(), label: {
-//            Image(imageName, label: Text(title))
-//                .resizable()
-//                .scaledToFit()
-//                .frame(width: 25.0, height: 25.0)
-//        })
-//        .help(help)
-//        .sheet(isPresented: $showingControls) {
-//            ColorControls()
-//        }
-//    }
-//}
 
 /**
  ViewPicker is the struct used to create toolbar segmented controls for viewing the document as a tree or list.
@@ -336,21 +371,6 @@ struct ViewPicker: View {
         }
     }
 }
-
-//struct ColorControls: View {
-//    @State private var selectedColor = Color.black
-//
-//    var body: some View {
-//      VStack(alignment: .center) {
-//        Text("Color Picker Demo").foregroundColor(selectedColor).font(.largeTitle)
-//        ColorPicker(
-//          "Pick a color",
-//          selection: $selectedColor
-//        )//.frame(width: 150, height: 150)
-//        Spacer()
-//      }.padding(.vertical, 70)
-//    }
-//}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
