@@ -28,7 +28,6 @@ struct ContentView: View {
                         .focusable()
                     
                 }
-                //ColorControls()
             }
         }
         //.background(Color.white)
@@ -54,7 +53,7 @@ func deleteAction() {
 func addItemAction() {
     if(tree.getNumSelected() != 1){
         print("Could not add Node")
-    }else{
+    } else {
         let selected = tree.getSelectedArray()[0]
         let tempNode = Node<String>(content: "")
         tree.move(tempNode, toParent: selected.getParent(), at: 0)
@@ -65,7 +64,7 @@ func addItemAction() {
 func addChildAction() {
     if(tree.getNumSelected() != 1){
         print("Could not add Child Node")
-    }else{
+    } else {
         let selected = tree.getSelectedArray()[0]
         let tempNode = Node<String>(content: "")
         tree.move(tempNode, toParent: selected, at: 0)
@@ -139,6 +138,14 @@ func strikeAction() {
     print("Strikethrough node")
 }
 
+func fontAction() {
+    
+}
+
+func sizeAction() {
+    
+}
+
 struct Toolbar: View {
     @State private var view = 0
     var body: some View {
@@ -166,9 +173,10 @@ struct Toolbar: View {
                 .shadow(radius: 1)
         }
         Spacer()
-        HStack(alignment: .bottom){
-            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
+        HStack(alignment: .center){
+//            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
             //ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
+            //ColorMenu()
             TextMenu()
         }
     }
@@ -202,29 +210,62 @@ struct ActionButton: View {
     }
 }
 
+struct ColorMenu: View {
+    @State private var selection = "Red"
+    let colors = ["Red", "Green", "Blue", "Black", "Tartan"]
+
+    var body: some View {
+        VStack {
+            Picker(selection: $selection, label: Text("h")) {
+                ForEach(0 ..< colors.count) { (i) in
+                    HStack {
+                        //Image(systemName: self.colors[i])
+                        Image("Text")
+                        Text(self.colors[i])
+                    }.tag(i)
+                }
+            }
+//            } label: {
+//                Image("Text", label: Text("Text"))
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 25.0, height: 25.0)
+//            }
+            .pickerStyle(MenuPickerStyle())
+
+            //Text("Selected color: \(selection)")
+        }
+    }
+}
+
 /**
- TextMenu is the struct used to create the text formatting menu to bold, italicize, underline, and strikethrough text.
+ TextMenu is the struct used to create the text formatting menu to bold, italicize, underline, and strikethrough text, and also change a node's font and size.
  */
 struct TextMenu: View {
+    
+    @State private var showingPopover = false
+
     var body: some View {
-        Menu {
-            Button(action: boldAction) {
-                Label("Bold", image: "Bold")
-            }
-            Button(action: italicAction) {
-                Label("Italic", image: "Italic")
-            }
-            Button(action: underlineAction) {
-                Label("Underline", image: "Underline")
-            }
-            Button(action: strikeAction) {
-                Label("Strikethrough", image: "Strike")
-            }
-        } label: {
+        Button(action: {
+                showingPopover = true
+        }) {
             Image("Text", label: Text("Text"))
                 .resizable()
                 .scaledToFit()
                 .frame(width: 25.0, height: 25.0)
+        }
+        .popover(isPresented: $showingPopover) {
+            HStack {
+                ActionButton(imageName: "Bold", title: "Bold", help: "Bold", customAction: boldAction)
+                ActionButton(imageName: "Italic", title: "Italic", help: "Italic", customAction: italicAction)
+                ActionButton(imageName: "Underline", title: "Underline", help: "Underline", customAction: underlineAction)
+                ActionButton(imageName: "Strikethrough", title: "Strikethrough", help: "Strikethrough", customAction: strikeAction)
+            }
+            .padding()
+//            Picker("Fonts"){
+//                Button("Font", action: {})
+//                Button("Font2", action: {})
+//            }
         }
         .help("Choose text style")
     }
@@ -296,24 +337,18 @@ struct ViewPicker: View {
     }
 }
 
-struct ColorControls: View {
-    @State private var selectedColor = Color.black
-    
-    var body: some View {
-      VStack(alignment: .center) {
-        Text("Color Picker Demo").foregroundColor(selectedColor).font(.largeTitle)
-        ColorPicker(
-          "Pick a color",
-          selection: $selectedColor
-        )//.frame(width: 150, height: 150)
-        Spacer()
-      }.padding(.vertical, 70)
-    }
-}
-
-//struct TextControls: View {
-//    var body: some View {
+//struct ColorControls: View {
+//    @State private var selectedColor = Color.black
 //
+//    var body: some View {
+//      VStack(alignment: .center) {
+//        Text("Color Picker Demo").foregroundColor(selectedColor).font(.largeTitle)
+//        ColorPicker(
+//          "Pick a color",
+//          selection: $selectedColor
+//        )//.frame(width: 150, height: 150)
+//        Spacer()
+//      }.padding(.vertical, 70)
 //    }
 //}
 
