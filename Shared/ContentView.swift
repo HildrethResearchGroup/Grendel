@@ -34,7 +34,7 @@ struct ContentView: View {
     }
 }
 
-//Toolbar functions
+// Tree Functions
 func treeViewAction() {
     print("Switch between tree and list view")
 }
@@ -58,7 +58,6 @@ func addItemAction() {
         let tempNode = Node<String>(content: "")
         tree.move(tempNode, toParent: selected.getParent(), at: 0)
     }
-    
 }
 
 func addChildAction() {
@@ -114,6 +113,10 @@ func colorAction() {
 //            .help("test")
 //        }
 //    }
+}
+
+func highlightAction() {
+
 }
 
 func textAction() {
@@ -254,25 +257,31 @@ struct ColorMenu: View {
                 .frame(width: 25.0, height: 25.0)
         }
         .popover(isPresented: $showingPopover) {
-            LazyVGrid(columns: columns, spacing: 5) {
-                ForEach(swatches, id: \.self){ swatch in
-                    Button(action: {
-                        selection = swatch
-                    }, label: {
-                        ZStack {
-                            Circle()
-                                .fill(Color(swatch))
-                                .frame(width: 21, height: 21)
-                                .padding(5)
-                            
-                            if selection == swatch {
+            VStack {
+                HStack {
+                    ActionButton(imageName: "TextColor", title: "Text Color", help: "Text color", customAction: colorAction)
+                    ActionButton(imageName: "Highlight", title: "Highlight", help: "Highlight color", customAction: highlightAction)
+                }
+                LazyVGrid(columns: columns, spacing: 5) {
+                    ForEach(swatches, id: \.self){ swatch in
+                        Button(action: {
+                            selection = swatch
+                        }, label: {
+                            ZStack {
                                 Circle()
-                                    .stroke(Color(swatch), lineWidth: 2)
-                                    .frame(width: 25, height: 25)
+                                    .fill(Color(swatch))
+                                    .frame(width: 21, height: 21)
+                                    .padding(5)
+                                
+                                if selection == swatch {
+                                    Circle()
+                                        .stroke(Color(swatch), lineWidth: 2)
+                                        .frame(width: 25, height: 25)
+                                }
                             }
-                        }
-                    })
-                    .buttonStyle(BorderlessButtonStyle())
+                        })
+                        .buttonStyle(BorderlessButtonStyle())
+                    }
                 }
             }
             .padding()
