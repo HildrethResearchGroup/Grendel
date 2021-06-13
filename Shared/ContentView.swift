@@ -121,6 +121,7 @@ func selectChildrenAction() {
 
 func selectParentAction() {
     document!.wrappedValue.selectAllParentsOfSelected()
+}
 
 // Text Editing Functions
 
