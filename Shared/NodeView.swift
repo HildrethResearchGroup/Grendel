@@ -26,18 +26,24 @@ struct NodeView: View {
     @ObservedObject var ts: Node<String>.TextSettings
     var width: CGFloat
     var radius: CGFloat
+    var spacing: CGFloat
+    var iconRadius: CGFloat
     
-    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5) {
+    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5, spacing: CGFloat = 20) {
         self.node = node
         self.width = width
         self.radius = radius
+        self.spacing = spacing
+        self.iconRadius = (spacing/2 + 17.0/2)/2
         self.ts = node.textSettings
     }
     
     var body: some View {
-//        ZStack {
-//            RoundedRectangle(cornerRadius: radius)
-//                .fill(ts.highlightColor ?? .accentColor)
+        HStack(alignment: .top, spacing: 0) {
+            // Add the circle or triangle icon
+            NodeIcon(hasChildren: !node.children.isEmpty).fill(Color.secondary).frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center).padding(.trailing, 0)
+                .padding([.leading, .top, .bottom], spacing/2)
+            // The text editor
             TextEditor(text: $node.content)
                 .onChange(of: node.content){value in
                     
@@ -67,8 +73,23 @@ struct NodeView: View {
                 .if(!shown){view in
                     view.disabled(shown)
                 }
-//        }
-        .frame(minWidth: width, idealWidth: width, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
+                .padding(.leading, spacing/4)
+                .padding([.trailing, .bottom, .top], spacing/2)
+        }.frame(maxWidth: width-spacing, idealHeight: 0)
+        .background(
+            createBackgroundRectangle()
+        )
+        .padding(.trailing, spacing)
+    }
+    
+    private func createBackgroundRectangle() -> some View {
+        Group {
+            if node.selected {
+                RoundedRectangle(cornerRadius: radius).fill(Color.accentColor)
+            } else {
+                RoundedRectangle(cornerRadius: radius).fill(BackgroundStyle())
+            }
+        }
     }
 }
 
@@ -86,6 +107,29 @@ extension View {
             transform(self)
         } else {
             self
+        }
+    }
+}
+
+struct NodeIcon: Shape {
+    let hasChildren: Bool
+    let radius: CGFloat = (10 + 17.0/2)/2
+    
+    func path(in rect: CGRect) -> Path {
+        Path { p in
+            if hasChildren {
+                p.move(to: CGPoint(x: 0, y: 0))
+                p.addLine(to: CGPoint(x: 1.5*radius, y: radius))
+                p.addLine(to: CGPoint(x: 0, y: 2*radius))
+                p.closeSubpath()
+            } else {
+                p.addArc(center: CGPoint(x: radius,
+                                         y: radius),
+                         radius: radius,
+                         startAngle: Angle(degrees: 0),
+                         endAngle: Angle(degrees: 360),
+                         clockwise: true)
+            }
         }
     }
 }
