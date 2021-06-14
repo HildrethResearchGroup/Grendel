@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Text.svg",
+      "filename" : "Highlight.svg",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "TextLight.svg",
+      "filename" : "HighlightLight.svg",
       "idiom" : "universal"
     }
   ],
