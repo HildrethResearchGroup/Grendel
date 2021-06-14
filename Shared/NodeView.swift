@@ -40,10 +40,10 @@ struct NodeView: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            Group {
-//            Text(">").foregroundColor(.green)
-                NodeIcon(hasChildren: !node.children.isEmpty).fill(Color.secondary).frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center).padding(.trailing, 0)
-                    .padding([.leading, .top, .bottom], /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            // Add the circle or triangle icon
+            NodeIcon(hasChildren: !node.children.isEmpty).fill(Color.secondary).frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center).padding(.trailing, 0)
+                .padding([.leading, .top, .bottom], spacing/2)
+            // The text editor
             TextEditor(text: $node.content)
                 .onChange(of: node.content){value in
                     
@@ -67,19 +67,18 @@ struct NodeView: View {
                 
                 .font(ts.getFont())
                 .foregroundColor(ts.foregroundColor)
-                //.frame(minWidth: nil, idealWidth: 100.0, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
+                .frame(minWidth: nil, idealWidth: width, maxWidth: width, minHeight: 10, idealHeight: nil, maxHeight: nil, alignment: .top)
                 .fixedSize(horizontal: false, vertical: true)
                 .if(!shown){view in
                     view.disabled(shown)
                 }
-                .padding(.leading, 5)
-                .padding([.trailing, .bottom, .top], /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-            }//.padding()
-        }.frame(maxWidth: width-20, idealHeight: 0)
+                .padding(.leading, spacing/4)
+                .padding([.trailing, .bottom, .top], spacing/2)
+        }.frame(maxWidth: width-spacing, idealHeight: 0)
         .background(
             createBackgroundRectangle()
         )
-        .padding(.trailing, 20)
+        .padding(.trailing, spacing)
         
     }
     
