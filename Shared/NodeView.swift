@@ -24,19 +24,20 @@ struct NodeView: View {
     @ObservedObject var node: Node<String>
     @State var shown: Bool = true
     @ObservedObject var ts: Node<String>.TextSettings
-    var width: CGFloat
     var radius: CGFloat
     var spacing: CGFloat
     var iconRadius: CGFloat
     
-    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5, spacing: CGFloat = 20) {
+
+    init(node: Node<String>, radius: CGFloat = 5, spacing: CGFloat = 20) {
         self.node = node
-        self.width = width
+        //self.width = node.width
         self.radius = radius
         self.spacing = spacing
         self.iconRadius = (spacing/2 + 17.0/2)/2
         self.ts = node.textSettings
     }
+    
     
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
@@ -60,18 +61,15 @@ struct NodeView: View {
                         shown = false
                     }
                 }
-                
-                //.border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
                 .font(ts.getFont())
                 .foregroundColor(ts.foregroundColor)
-                //.padding(15)
                 .fixedSize(horizontal: false, vertical: true)
                 .if(!shown){view in
                     view.disabled(shown)
                 }
                 .padding(.leading, spacing/4)
                 .padding([.trailing, .bottom, .top], spacing/2)
-        }.frame(maxWidth: width-spacing, idealHeight: 0)
+        }.frame(maxWidth: node.width - spacing, idealHeight: 0)
         .background(
             createBackgroundRectangle()
         )
@@ -85,9 +83,12 @@ struct NodeView: View {
             } else {
                 RoundedRectangle(cornerRadius: radius).fill(Color("Default"))
             }
+
         }
     }
 }
+
+
 
 
 // allows for easy application of view modifiers based on a condition
