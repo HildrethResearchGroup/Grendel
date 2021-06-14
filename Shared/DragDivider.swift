@@ -44,11 +44,11 @@ struct DragDivider : View{
         .gesture(
             DragGesture().onChanged { value in
                 //Sets minimum space from previous divider.
-                if(value.location.x > 20 - tree.levelWidths[dividerNumber]){
+                if(value.location.x > 50 - tree.levelWidths[dividerNumber]){
                     viewState = CGSize(width: value.location.x, height: 0)
                 }
                 else{
-                    viewState = CGSize(width: 20 - tree.levelWidths[dividerNumber], height: 0)
+                    viewState = CGSize(width: 50 - tree.levelWidths[dividerNumber], height: 0)
                     
                 }
                 //Records the current widths of the dividers so that the tree class can space its nodes.
@@ -56,9 +56,6 @@ struct DragDivider : View{
                 
                 tree.updateLevelWidths(level: dividerNumber + 1, width: tree.currentWidths[dividerNumber])
                 
-            }
-            .onEnded{value in
-                //tree.levelWidths = tree.currentWidths
             }
         )
     }
