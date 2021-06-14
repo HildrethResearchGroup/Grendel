@@ -81,13 +81,13 @@ struct Diagram<V: View>: View {
                                     to: proxy[centers[child.id]!] ,
                                     firstChild: child.firstChild,
                                     lastChild: child.lastChild,
-                                    parentWidth: currNode.parent!.width,
+                                    parentWidth: currNode.width,
                                     radius: radius
                                 )
                                 .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // set stroke of the lines
                             } else {
                                 NodeHiddenLine(
-                                    from: proxy[centers[self.currNode.id]!], parentWidth: currNode.parent!.width)
+                                    from: proxy[centers[self.currNode.id]!], parentWidth: currNode.width)
                                     .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3]))
                             }
                         }

@@ -81,7 +81,7 @@ struct NodeView: View {
             if node.selected {
                 RoundedRectangle(cornerRadius: radius).fill(Color.accentColor)
             } else {
-                RoundedRectangle(cornerRadius: radius).fill(Color("Default"))
+                RoundedRectangle(cornerRadius: radius).fill(ts.highlightColor ?? Color("Default"))
             }
 
         }
