@@ -26,48 +26,71 @@ struct NodeView: View {
     var ts: Node<String>.TextSettings
     var width: CGFloat
     var radius: CGFloat
+    var spacing: CGFloat
+    var iconRadius: CGFloat
     
-    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5) {
+    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5, spacing: CGFloat = 20) {
         self.node = node
         self.width = width
         self.radius = radius
+        self.spacing = spacing
+        self.iconRadius = (spacing/2 + 17.0/2)/2
         self.ts = node.textSettings
     }
     
     var body: some View {
-        TextEditor(text: $node.content)
-            .onChange(of: node.content){value in
+        HStack(alignment: .top, spacing: 0) {
+            Group {
+//            Text(">").foregroundColor(.green)
+                NodeIcon(hasChildren: !node.children.isEmpty).fill(Color.secondary).frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center).padding(.trailing, 0)
+                    .padding([.leading, .top, .bottom], /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            TextEditor(text: $node.content)
+                .onChange(of: node.content){value in
+                    
+                    //Detects when enter is pressed and takes the user out of the textEditor.
+                    shown = true
+                    document!.wrappedValue.deselectAll()
+                    node.selected = true
+                    if value.contains("\n"){
+                        node.content = value.replacingOccurrences(of: "\n", with: "")
+                        shown = false
+                    }
+                    if value.contains("\t"){
+                        node.content = value.replacingOccurrences(of: "\t", with: "")
+                        shown = false
+                    }
+                }
                 
-                //Detects when enter is pressed and takes the user out of the textEditor.
-                shown = true
-                document!.wrappedValue.deselectAll()
-                node.selected = true
-                if value.contains("\n"){
-                    node.content = value.replacingOccurrences(of: "\n", with: "")
-                    shown = false
+                //            .if(ts.isUnderlined) { view in
+                //                view.underline()
+                //            }
+                
+                .font(ts.getFont())
+                .foregroundColor(ts.foregroundColor)
+                //.frame(minWidth: nil, idealWidth: 100.0, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
+                .fixedSize(horizontal: false, vertical: true)
+                .if(!shown){view in
+                    view.disabled(shown)
                 }
-                if value.contains("\t"){
-                    node.content = value.replacingOccurrences(of: "\t", with: "")
-                    shown = false
-                }
-            }
-            
-            //            .if(ts.isUnderlined) { view in
-            //                view.underline()
-            //            }
-            
-            .font(ts.getFont())
-            .foregroundColor(ts.foregroundColor)
-            .frame(minWidth: nil, idealWidth: 100.0, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
-            .background(
-                RoundedRectangle(cornerRadius: 5.0)
-                    .fill(ts.highlightColor ?? Color.clear)
-            )
-            .fixedSize(horizontal: false, vertical: true)
-            .if(!shown){view in
-                view.disabled(shown)
-            }
+                .padding(.leading, 5)
+                .padding([.trailing, .bottom, .top], /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            }//.padding()
+        }.frame(maxWidth: width-20, idealHeight: 0)
+        .background(
+            createBackgroundRectangle()
+        )
+        .padding(.trailing, 20)
         
+    }
+    
+    private func createBackgroundRectangle() -> some View {
+        Group {
+            if node.selected {
+                RoundedRectangle(cornerRadius: radius).fill(Color.accentColor)
+            } else {
+                RoundedRectangle(cornerRadius: radius).fill(BackgroundStyle())
+            }
+        }
     }
 }
 
@@ -85,6 +108,29 @@ extension View {
             transform(self)
         } else {
             self
+        }
+    }
+}
+
+struct NodeIcon: Shape {
+    let hasChildren: Bool
+    let radius: CGFloat = (10 + 17.0/2)/2
+    
+    func path(in rect: CGRect) -> Path {
+        Path { p in
+            if hasChildren {
+                p.move(to: CGPoint(x: 0, y: 0))
+                p.addLine(to: CGPoint(x: 1.5*radius, y: radius))
+                p.addLine(to: CGPoint(x: 0, y: 2*radius))
+                p.closeSubpath()
+            } else {
+                p.addArc(center: CGPoint(x: radius,
+                                         y: radius),
+                         radius: radius,
+                         startAngle: Angle(degrees: 0),
+                         endAngle: Angle(degrees: 360),
+                         clockwise: true)
+            }
         }
     }
 }

@@ -10,13 +10,14 @@ import SwiftUI
 let widths: Array<CGFloat> = [100, 300, 100, 100, 100, 100, 100]
 // MARK: Drawing consts
 private let radius: CGFloat = 5
+private let spacing: CGFloat = 20
 
 
 struct TreeView: View {
     @ObservedObject var outlinerDocument: OutlinerDocument// = OutlinerDocument()
     var body: some View {
         Diagram(currNode: outlinerDocument.tree.rootNode, makeNodeView: { (value: Node<String>) in
-            NodeView(node: value, width: widths[value.depth - 1], radius: radius)
+            NodeView(node: value, width: widths[value.depth - 1], radius: radius, spacing: spacing)
                 .gesture(TapGesture().modifiers(.command).onEnded {
                     if value.selected {
                         outlinerDocument.deselectMultiple(node: value)
@@ -54,7 +55,7 @@ struct Diagram<V: View>: View {
     typealias Key = CollectDict<Node<String>.ID, Anchor<CGPoint>>
 
     var body: some View {
-        HStack(alignment: .top, spacing: 20) {
+        HStack(alignment: .top, spacing: 0) {
             if currNode.depth != 0{
                 makeNodeView(currNode)
                     .anchorPreference(key: Key.self, value: .topLeading, transform: { // the anchor point
@@ -97,7 +98,7 @@ struct Diagram<V: View>: View {
 }
 
 struct NodeConnectingLine: Shape {
-    let offset: CGFloat = 25
+    let offset: CGFloat = 10 + 17.0/2
 
     init(from: CGPoint, to: CGPoint, firstChild: Bool, lastChild: Bool, parentWidth: CGFloat, radius: CGFloat = 5) {
         self.firstChild = firstChild
@@ -116,7 +117,7 @@ struct NodeConnectingLine: Shape {
     var from: CGPoint {
         get { return _from }
         set(newValue) { _from = CGPoint(
-            x: newValue.x + parentWidth,
+            x: newValue.x + parentWidth - spacing,
             y: newValue.y + offset) }
     }
     private var _to = CGPoint()
@@ -159,7 +160,7 @@ struct NodeConnectingLine: Shape {
 }
 
 struct NodeHiddenLine: Shape {
-    let offset: CGFloat = 25
+    let offset: CGFloat = 10 + 17.0/2
     var parentWidth: CGFloat
     let radius: CGFloat
 
