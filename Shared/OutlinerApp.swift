@@ -55,7 +55,7 @@ struct OutlinerApp: App {
                 CommandGroup(after: .saveItem) {
                     Button("Export to text file") {
                         exportCommand.send()
-                    }
+                    }.keyboardShortcut(KeyEquivalent("e"), modifiers: [.shift, .command])
                 }
                 CommandMenu("Editor") {
                     Button("Delete") {
