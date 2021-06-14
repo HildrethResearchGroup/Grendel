@@ -38,7 +38,7 @@ struct ContentView: View {
 }
 }
 
-// Tree Functions
+//Toolbar functions
 func treeViewAction() {
     print("Switch between tree and list view")
 }
@@ -80,11 +80,7 @@ func toggleAction() {
 }
 
 func colorAction() {
-
-}
-
-func highlightAction() {
-
+    print("Colored")
 }
 
 func textAction() {
@@ -123,37 +119,16 @@ func selectParentAction() {
     document!.wrappedValue.selectAllParentsOfSelected()
 }
 
-// Text Editing Functions
-
-func boldAction() {
-    print("Bold node")
-}
-
-func italicAction() {
-    print("Italic node")
-}
-
-func underlineAction() {
-    print("Underline node")
-}
-
-func strikeAction() {
-    print("Strikethrough node")
-}
-
-func fontAction() {
-    
-}
-
-func sizeAction() {
-    
-}
-
 struct Toolbar: View {
     @State private var view = 0
     var body: some View {
         // main buttons to modify the model
         //FIXME: Enter doesn't work in full screen
+//        ActionPicker(imageNames: ["ListView", "TreeView"], labels: ["List View", "Tree View"], customAction: viewAction)
+//        HStack(alignment: .center) {
+//            ActionButton(imageName: "ListView", label: "List View", customAction: viewAction)
+//            ActionButton(imageName: "TreeView", label: "Tree View", customAction: viewAction)
+//        }
         ViewPicker()
         Spacer()
         HStack(alignment: .center) {
@@ -176,11 +151,9 @@ struct Toolbar: View {
                 .shadow(radius: 1)
         }
         Spacer()
-        HStack(alignment: .center){
-//            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
-            //ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
-            TextMenu()
-            ColorMenu()
+        HStack(alignment: .bottom){
+            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
+            ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
         }
     }
 }
@@ -210,116 +183,6 @@ struct ActionButton: View {
                 .frame(width: 25.0, height: 25.0)
         })
         .help(help)
-    }
-}
-
-struct ColorMenu: View {
-    @State private var showingPopover = false
-    @State private var selection = "Default"
-    
-    let swatches = [
-        "Watermelon",
-        "Pomegranate",
-        "Plum",
-        "Grape",
-        "Blackberry",
-        "Blueberry",
-        "Sky",
-        "RobinEgg",
-        "CopperPatina",
-        "Avocado",
-        "GreenApple",
-        "Lime",
-        "Banana",
-        "Mango",
-        "Tangerine",
-        "Persimmon",
-        "Default",
-        "LittleGray",
-        "BigGray",
-        "Inverted"
-    ]
-
-    let columns = [
-        GridItem(.fixed(25), spacing: 5),
-        GridItem(.fixed(25), spacing: 5),
-        GridItem(.fixed(25), spacing: 5),
-        GridItem(.fixed(25), spacing: 5)
-    ]
-    
-    var body: some View {
-        Button(action: {
-                showingPopover = true
-        }) {
-            Image("Colors", label: Text("Colors"))
-                .resizable()
-                .scaledToFit()
-                .frame(width: 25.0, height: 25.0)
-        }
-        .popover(isPresented: $showingPopover) {
-            VStack {
-                HStack {
-                    ActionButton(imageName: "TextColor", title: "Text Color", help: "Text color", customAction: colorAction)
-                    ActionButton(imageName: "Highlight", title: "Highlight", help: "Highlight color", customAction: highlightAction)
-                }
-                LazyVGrid(columns: columns, spacing: 5) {
-                    ForEach(swatches, id: \.self){ swatch in
-                        Button(action: {
-                            selection = swatch
-                        }, label: {
-                            ZStack {
-                                Circle()
-                                    .fill(Color(swatch))
-                                    .frame(width: 21, height: 21)
-                                    .padding(5)
-                                
-                                if selection == swatch {
-                                    Circle()
-                                        .stroke(Color(swatch), lineWidth: 2)
-                                        .frame(width: 25, height: 25)
-                                }
-                            }
-                        })
-                        .buttonStyle(BorderlessButtonStyle())
-                    }
-                }
-            }
-            .padding()
-        }
-        .help("Choose text color")
-    }
-}
-
-/**
- TextMenu is the struct used to create the text formatting menu to bold, italicize, underline, and strikethrough text, and also change a node's font and size.
- */
-struct TextMenu: View {
-    
-    @State private var showingPopover = false
-
-    var body: some View {
-        Button(action: {
-                showingPopover = true
-        }) {
-            Image("Text", label: Text("Text"))
-                .resizable()
-                .scaledToFit()
-                .frame(width: 25.0, height: 25.0)
-        }
-        .popover(isPresented: $showingPopover) {
-            HStack {
-                ActionButton(imageName: "Bold", title: "Bold", help: "Bold", customAction: boldAction)
-                ActionButton(imageName: "Italic", title: "Italic", help: "Italic", customAction: italicAction)
-                ActionButton(imageName: "Underline", title: "Underline", help: "Underline", customAction: underlineAction)
-                ActionButton(imageName: "Strikethrough", title: "Strikethrough", help: "Strikethrough", customAction: strikeAction)
-            }
-            .padding()
-//            Picker("Fonts"){
-//                Button("Font", action: {})
-//                Button("Font2", action: {})
-//            }
-        }
-        .help("Choose text style")
     }
 }
 
@@ -354,16 +217,15 @@ struct ViewPicker: View {
                     .scaledToFit()
                     .frame(width: 25.0, height: 25.0)
                     .tag(ViewNotes.tree)
-                    //.help("View notes as tree") /// FIXME: why don't the help tags don't display for each option?
+                    .help("View notes as tree") /// TODO: fix why the help tags don't display in the picker?
                 Image("ListView", label: Text("List View"))
                     .resizable()
                     .scaledToFit()
                     .frame(width: 25.0, height: 25.0)
                     .tag(ViewNotes.list)
-                    //.help("View notes as list")
+                    .help("View notes as list")
             }
             .pickerStyle(SegmentedPickerStyle())
-            .help("View notes as tree or list")
         }
     }
 }
