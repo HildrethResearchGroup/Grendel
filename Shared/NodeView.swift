@@ -60,7 +60,7 @@ struct NodeView: View {
                 .foregroundColor(ts.foregroundColor)
                 .padding(15)
                 .background(
-                    RoundedRectangle(cornerRadius: 5.0)
+                    RoundedRectangle(cornerRadius: radius)
                         .fill(ts.highlightColor ?? Color("Default"))
                 )
                 .fixedSize(horizontal: false, vertical: true)

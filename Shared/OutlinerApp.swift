@@ -18,12 +18,13 @@ struct OutlinerApp: App {
     // Custom scene that handles the exporting of files and the
     // addition of the menu buttons to do so
     struct DocumentWindow: Scene {
-        // used as a SwiftUI workaround to access members of the file var
+        // used as a SwiftUI workaround to access members of the file var inside ContentView
         private let exportCommand = PassthroughSubject<Void, Never>()
         
         var body : some Scene {
             DocumentGroup(newDocument: OutlinerDocument()) { file in
                 ContentView(file.$document)
+                    // export to text file
                     .onReceive(exportCommand) { _ in
                         do {
                             // get the name of the file, including extension
@@ -48,6 +49,8 @@ struct OutlinerApp: App {
                         }
                     }
             }
+            // adding custom commands with keybinds for main actions
+            // functionality explained in each action function
             .commands {
                 CommandGroup(after: .saveItem) {
                     Button("Export to text file") {
@@ -76,17 +79,10 @@ struct OutlinerApp: App {
                     }.keyboardShortcut(.tab, modifiers: [.shift])
                 }
                 CommandMenu("Node"){
-                    //                    Button("Edit Node"){
-                    //                        editAction()
-                    //                    }
                     
                     Button("Toggle Children"){
                         toggleAction()
                     }
-                    
-                    //                    Button("Highlight"){
-                    //                        labelAction()
-                    //                    }
                     
                     Button("Text"){
                         textAction()
@@ -125,6 +121,8 @@ struct OutlinerApp: App {
     }
 }
 
+// helper function for finding a safe place to store the file
+// in production, it is intended to save to the user's documents folder
 func getDocumentsFolder() -> URL {
     // find all possible documents directories for this user
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
