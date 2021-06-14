@@ -173,7 +173,7 @@ struct NodeHiddenLine: Shape {
     }
 
     init(from: CGPoint, parentWidth: CGFloat, radius: CGFloat = 5) {
-        self.parentWidth = parentWidth
+        self.parentWidth = parentWidth - spacing
         self.radius = radius
         self.from = from
     }
