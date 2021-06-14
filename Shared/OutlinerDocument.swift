@@ -22,29 +22,29 @@ class OutlinerDocument: FileDocument, ObservableObject {
         init() {
             tree = Tree()
             
-            // TODO: remove below, was test code only
-            let nodeA = Node<String>(content: "yes")
+             //TODO: remove below, was test code only
+            let nodeA = Node<String>(content: "yes", width: 100.0)
             nodeA.textSettings.setWeight(.bold)
             tree.move(nodeA, toParent: tree.rootNode, at: 0)
-            let nodeAB = Node<String>(content: "AB")
+            let nodeAB = Node<String>(content: "AB", width: 100.0)
             tree.move(nodeAB, toParent: nodeA, at: 0)
-            let nodeABC = Node<String>(content: "ABC")
+            let nodeABC = Node<String>(content: "ABC", width: 100.0)
             tree.move(nodeABC, toParent: nodeAB, at: 0)
-            let nodeAC = Node<String>(content: "AC")
+            let nodeAC = Node<String>(content: "AC", width: 100.0)
             tree.move(nodeAC, toParent: nodeA, at: 1)
-            let nodeACD = Node<String>(content: "ACD")
+            let nodeACD = Node<String>(content: "ACD", width: 100.0)
             tree.move(nodeACD, toParent: nodeAC, at: 0)
-            let nodeAA = Node<String>(content: "AA")
+            let nodeAA = Node<String>(content: "AA", width: 100.0)
             tree.move(nodeAA, toParent: nodeA, at: 0)
-            let nodeB = Node<String>(content: "B")
+            let nodeB = Node<String>(content: "B", width: 100.0)
             tree.move(nodeB, toParent: tree.rootNode, at: 1)
-            let nodeX = Node<String>(content: "X")
+            let nodeX = Node<String>(content: "X", width: 100.0)
             tree.move(nodeX, toParent: nodeB, at: 0)
-            let nodeY = Node<String>(content: "Y")
+            let nodeY = Node<String>(content: "Y", width: 100.0)
             tree.move(nodeY, toParent: nodeX, at: 0)
-            
+
             nodeAC.childrenShown = false
-            
+
             selectSingle(node: nodeA)
             
             tree.findMaxDepth()
@@ -267,28 +267,42 @@ class OutlinerDocument: FileDocument, ObservableObject {
     
     func newline(createUnder: Bool = true) {
         objectWillChange.send()
-        let newNode = Node<String>(content: "")
         let selectedNodes = tree.getSelectedArray()
         if selectedNodes.count != 1 && tree.rootNode.children.count > 0 {
             print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
         } else {
             if tree.rootNode.children.count == 0 {
+                let newNode = Node<String>(content: "", width: 100.0)
                 move(node: newNode, toParent: tree.rootNode, at: 0)
+                print("Okay")
             } else if createUnder {
+                let newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth-1])
                 moveUnder(movingNode: newNode, aboveNode: selectedNodes.first!)
+                print(tree.currentWidths[selectedNodes[0].depth-1])
+                print(1)
             } else {
+                let newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth-1])
                 moveAbove(movingNode: newNode, belowNode: selectedNodes.first!)
+                print(tree.currentWidths[selectedNodes[0].depth-1])
+                print(2)
             }
         }
     }
     
     func newchild() {
         objectWillChange.send()
-        let newNode = Node<String>(content: "")
+        
         let selectedNodes = tree.getSelectedArray()
         if selectedNodes.count != 1 {
             print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
         } else {
+            
+            var newNode : Node<String>
+            if(tree.levelWidths.count == selectedNodes[0].depth || selectedNodes[0].depth < 0){
+                newNode = Node<String>(content: "", width: 100.0)
+            }else{
+                newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth])
+            }
             move(node: newNode, toParent: selectedNodes.first!, at: selectedNodes.first!.children.endIndex)
         }
     }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let widths: Array<CGFloat> = [100, 300, 100, 100, 100, 100, 100]
+//let widths: Array<CGFloat> = [100, 300, 100, 100, 100, 100, 100]
 // MARK: Drawing consts
 private let radius: CGFloat = 5
 
@@ -16,7 +16,7 @@ struct TreeView: View {
     @ObservedObject var outlinerDocument: OutlinerDocument// = OutlinerDocument()
     var body: some View {
         Diagram(currNode: outlinerDocument.tree.rootNode, makeNodeView: { (value: Node<String>) in
-            NodeView(node: value, width: widths[value.depth - 1], radius: radius)
+            NodeView(node: value,  radius: radius)
                 .gesture(TapGesture().modifiers(.command).onEnded {
                     if value.selected {
                         outlinerDocument.deselectMultiple(node: value)
@@ -79,13 +79,13 @@ struct Diagram<V: View>: View {
                                     to: proxy[centers[child.id]!] ,
                                     firstChild: child.firstChild,
                                     lastChild: child.lastChild,
-                                    parentWidth: widths[self.currNode.depth - 1],
+                                    parentWidth: currNode.parent!.width,
                                     radius: radius
                                 )
                                 .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // set stroke of the lines
                             } else {
                                 NodeHiddenLine(
-                                    from: proxy[centers[self.currNode.id]!], parentWidth: widths[self.currNode.depth - 1])
+                                    from: proxy[centers[self.currNode.id]!], parentWidth: currNode.parent!.width)
                                     .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3]))
                             }
                         }

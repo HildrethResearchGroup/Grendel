@@ -24,15 +24,16 @@ struct NodeView: View {
     @ObservedObject var node: Node<String>
     @State var shown: Bool = true
     var ts: Node<String>.TextSettings
-    var width: CGFloat
+    //var width: CGFloat
     var radius: CGFloat
     
-    init(node: Node<String>, width: CGFloat, radius: CGFloat = 5) {
+    init(node: Node<String>, radius: CGFloat = 5) {
         self.node = node
-        self.width = width
+        //self.width = node.width
         self.radius = radius
         self.ts = node.textSettings
     }
+    
     
     var body: some View {
         TextEditor(text: $node.content)
@@ -58,10 +59,10 @@ struct NodeView: View {
             
             .font(ts.getFont())
             .foregroundColor(ts.foregroundColor)
-            .frame(minWidth: nil, idealWidth: 100.0, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
+            .frame(minWidth: node.width, idealWidth: node.width, maxWidth: node.width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
             .background(
                 RoundedRectangle(cornerRadius: 5.0)
-                    .fill(ts.highlightColor ?? Color.clear)
+                    .fill(ts.highlightColor ?? Color.blue)
             )
             .fixedSize(horizontal: false, vertical: true)
             .if(!shown){view in
@@ -70,6 +71,8 @@ struct NodeView: View {
         
     }
 }
+
+
 
 
 // allows for easy application of view modifiers based on a condition
