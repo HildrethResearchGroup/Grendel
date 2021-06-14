@@ -9,11 +9,11 @@ import Foundation
 
 class Tree: Codable, ObservableObject {
     // The root node is used as a container for other nodes only, it contains no data, is not rendered,
-    @Published var rootNode = Node<String>(content: "")
+    @Published var rootNode = Node<String>(content: "", width: 0.0)
     var selectedLevel: Int? = nil
     @Published var maxDepth: Int = 0
-    var levelWidths: [CGFloat] = [100]
-    var currentWidths: [CGFloat] = [100]
+    @Published var levelWidths: [CGFloat] = [100]
+    @Published var currentWidths: [CGFloat] = [100]
     
     
     init() {}
@@ -31,6 +31,10 @@ class Tree: Codable, ObservableObject {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(rootNode, forKey: .rootNode)
+    }
+    
+    func updateLevelWidths(level: Int, width: CGFloat){
+        rootNode.updateLevelWidths(level: level, width: width)
     }
     
     // MARK: modifications
@@ -92,6 +96,8 @@ class Tree: Codable, ObservableObject {
         
         // Add the relationship to the new parent
         newParent.insertChild(child: node, at: index)
+        
+        findMaxDepth()
     }
     
     // Creates a copy of a node, and copies all of its children and

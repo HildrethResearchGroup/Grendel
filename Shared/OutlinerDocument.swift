@@ -22,6 +22,7 @@ class OutlinerDocument: FileDocument, ObservableObject {
     init() {
         tree = Tree()
     }
+
     
     static var readableContentTypes: [UTType] { [.treeType] }
     
@@ -221,28 +222,42 @@ class OutlinerDocument: FileDocument, ObservableObject {
     
     func newline(createUnder: Bool = true) {
         objectWillChange.send()
-        let newNode = Node<String>(content: "")
         let selectedNodes = tree.getSelectedArray()
         if selectedNodes.count != 1 && tree.rootNode.children.count > 0 {
             print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
         } else {
             if tree.rootNode.children.count == 0 {
+                let newNode = Node<String>(content: "", width: 100.0)
                 move(node: newNode, toParent: tree.rootNode, at: 0)
+                print("Okay")
             } else if createUnder {
+                let newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth-1])
                 moveUnder(movingNode: newNode, aboveNode: selectedNodes.first!)
+                print(tree.currentWidths[selectedNodes[0].depth-1])
+                print(1)
             } else {
+                let newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth-1])
                 moveAbove(movingNode: newNode, belowNode: selectedNodes.first!)
+                print(tree.currentWidths[selectedNodes[0].depth-1])
+                print(2)
             }
         }
     }
     
     func newchild() {
         objectWillChange.send()
-        let newNode = Node<String>(content: "")
+        
         let selectedNodes = tree.getSelectedArray()
         if selectedNodes.count != 1 {
             print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
         } else {
+            
+            var newNode : Node<String>
+            if(tree.levelWidths.count == selectedNodes[0].depth || selectedNodes[0].depth < 0){
+                newNode = Node<String>(content: "", width: 100.0)
+            }else{
+                newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth])
+            }
             move(node: newNode, toParent: selectedNodes.first!, at: selectedNodes.first!.children.endIndex)
         }
     }

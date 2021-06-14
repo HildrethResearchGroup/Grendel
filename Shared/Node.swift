@@ -15,6 +15,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     let id = UUID()
     @Published var selected: Bool = false
     @Published var childrenShown: Bool = true
+    @Published var width : CGFloat
     var depth: Int {
         switch parent {
         case nil:
@@ -30,15 +31,49 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         return parent!.indexOfChild(self) == parent!.children.endIndex - 1
     }
     
-    init(content: Content) {
+    init(content: Content, width: CGFloat) {
         self.content = content
+        self.width = width
     }
     
-    private init(content: Content, textSettings: TextSettings, childrenShown: Bool) {
+    private init(content: Content, textSettings: TextSettings, childrenShown: Bool, width: CGFloat) {
         self.content = content
         self.textSettings = textSettings
         self.childrenShown = childrenShown
+        self.width = width
+        
     }
+    
+    func updateLevelWidths(level: Int, width: CGFloat){
+        if(depth == level){
+            self.width = width
+        }else{
+            for node in children{
+                node.updateLevelWidths(level: level, width: width)
+            }
+        }
+    }
+    
+    func getLevelWidths(level: Int) -> CGFloat{
+        var size: CGFloat = 0.0
+        
+        if(depth == 1+level){
+            for node in children{
+                size = node.width
+            }
+            
+            if(size == 0.0){
+                size = (parent?.getLevelWidths(level: level))!
+            }
+        }else if(depth == level){
+            size = (parent?.getLevelWidths(level: level))!
+        }else{
+            
+        }
+        
+        return size
+    }
+
     
     // MARK: modify node
     func insertChild(child: Node, at insertIndex: Int) {
@@ -53,7 +88,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     }
     
     func copy() -> Node {
-        return Node(content: content)
+        return Node(content: content, width: width)
     }
     
     func copyAll() -> Node {
@@ -65,7 +100,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         
         return Node(content: self.content,
                     textSettings: self.textSettings,
-                    childrenShown: self.childrenShown)
+                    childrenShown: self.childrenShown, width: width)
     }
     
     func getParent() -> Node{
@@ -112,6 +147,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         children = try container.decode(Array<Node>.self, forKey: .children)
         content = try container.decode(Content.self, forKey: .content)
         textSettings = TextSettings()
+        self.width = 100.0
         for child in children {
             child.parent = self
         }
