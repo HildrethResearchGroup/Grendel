@@ -23,19 +23,19 @@ struct ContentView: View {
                     
                     TreeView(outlinerDocument: document!.wrappedValue)
                         .padding()
-                        .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
                         .toolbar(content: {
                             Toolbar()
                         })
                         .focusable()
-                    
+                        .frame(minWidth: geo.size.width, maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/,
+                               minHeight: geo.size.height, maxHeight: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/,
+                               alignment: .topLeading)
                 }.onTapGesture {
-                document!.wrappedValue.deselectAll()
+                    document!.wrappedValue.deselectAll()
+                }
             }
         }
-        //.background(Color.white)
     }
-}
 }
 
 // Tree Functions
@@ -54,13 +54,13 @@ func deleteAction() {
 func addItemAction() {
     print("newline shenanigans")
     document!.wrappedValue.newline()
-//    if(tree.getNumSelected() != 1){
-//        print("Could not add Node")
-//    }else{
-//        let selected = tree.getSelectedArray()[0]
-//        let tempNode = Node<String>(content: "")
-//        tree.move(tempNode, toParent: selected.getParent(), at: 0)
-//    }
+    //    if(tree.getNumSelected() != 1){
+    //        print("Could not add Node")
+    //    }else{
+    //        let selected = tree.getSelectedArray()[0]
+    //        let tempNode = Node<String>(content: "")
+    //        tree.move(tempNode, toParent: selected.getParent(), at: 0)
+    //    }
 }
 
 func addChildAction() {
@@ -79,13 +79,6 @@ func toggleAction() {
     document!.wrappedValue.toggleSelected()
 }
 
-func colorAction() {
-
-}
-
-func highlightAction() {
-
-}
 
 func textAction() {
     print("Change font")
@@ -126,19 +119,27 @@ func selectParentAction() {
 // Text Editing Functions
 
 func boldAction() {
-    print("Bold node")
+    document!.wrappedValue.boldSelected()
 }
 
 func italicAction() {
-    print("Italic node")
+    document!.wrappedValue.italicizeSelected()
+}
+
+func colorAction(colorString: String) {
+    document!.wrappedValue.colorSelected(colorString: colorString)
+}
+
+func highlightAction(colorString: String) {
+    document!.wrappedValue.highlightSelected(colorString: colorString)
 }
 
 func underlineAction() {
-    print("Underline node")
+    print("Unsupported action")
 }
 
 func strikeAction() {
-    print("Strikethrough node")
+    print("Unsupported action")
 }
 
 func fontAction() {
@@ -177,7 +178,7 @@ struct Toolbar: View {
         }
         Spacer()
         HStack(alignment: .center){
-//            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
+            //            ActionButton(imageName: "Colors", title: "Colors", help: "Choose text color", customAction: colorAction)
             //ActionButton(imageName: "Text", title: "Text", help: "Choose text style", customAction: textAction)
             TextMenu()
             ColorMenu()
@@ -190,10 +191,10 @@ struct Toolbar: View {
  ActionButton is the struct used to create toolbar buttons.
  
  - Parameters:
-    - imageName: The name of the image in assets
-    - title: The name of the button
-    - help: The help tag for the button
-    - customAction: The toolbar action that is represented
+ - imageName: The name of the image in assets
+ - title: The name of the button
+ - help: The help tag for the button
+ - customAction: The toolbar action that is represented
  */
 struct ActionButton: View {
     var imageName: String
@@ -239,7 +240,7 @@ struct ColorMenu: View {
         "BigGray",
         "Inverted"
     ]
-
+    
     let columns = [
         GridItem(.fixed(25), spacing: 5),
         GridItem(.fixed(25), spacing: 5),
@@ -249,7 +250,7 @@ struct ColorMenu: View {
     
     var body: some View {
         Button(action: {
-                showingPopover = true
+            showingPopover = true
         }) {
             Image("Colors", label: Text("Colors"))
                 .resizable()
@@ -259,8 +260,8 @@ struct ColorMenu: View {
         .popover(isPresented: $showingPopover) {
             VStack {
                 HStack {
-                    ActionButton(imageName: "TextColor", title: "Text Color", help: "Text color", customAction: colorAction)
-                    ActionButton(imageName: "Highlight", title: "Highlight", help: "Highlight color", customAction: highlightAction)
+                    ActionButton(imageName: "TextColor", title: "Text Color", help: "Text color", customAction: {colorAction(colorString: selection)})
+                    ActionButton(imageName: "Highlight", title: "Highlight", help: "Highlight color", customAction: {highlightAction(colorString: selection)} )
                 }
                 LazyVGrid(columns: columns, spacing: 5) {
                     ForEach(swatches, id: \.self){ swatch in
@@ -296,10 +297,10 @@ struct ColorMenu: View {
 struct TextMenu: View {
     
     @State private var showingPopover = false
-
+    
     var body: some View {
         Button(action: {
-                showingPopover = true
+            showingPopover = true
         }) {
             Image("Text", label: Text("Text"))
                 .resizable()
@@ -310,14 +311,14 @@ struct TextMenu: View {
             HStack {
                 ActionButton(imageName: "Bold", title: "Bold", help: "Bold", customAction: boldAction)
                 ActionButton(imageName: "Italic", title: "Italic", help: "Italic", customAction: italicAction)
-                ActionButton(imageName: "Underline", title: "Underline", help: "Underline", customAction: underlineAction)
-                ActionButton(imageName: "Strikethrough", title: "Strikethrough", help: "Strikethrough", customAction: strikeAction)
+                //                ActionButton(imageName: "Underline", title: "Underline", help: "Underline", customAction: underlineAction)
+                //                ActionButton(imageName: "Strikethrough", title: "Strikethrough", help: "Strikethrough", customAction: strikeAction)
             }
             .padding()
-//            Picker("Fonts"){
-//                Button("Font", action: {})
-//                Button("Font2", action: {})
-//            }
+            //            Picker("Fonts"){
+            //                Button("Font", action: {})
+            //                Button("Font2", action: {})
+            //            }
         }
         .help("Choose text style")
     }
@@ -331,7 +332,7 @@ struct ViewPicker: View {
     private enum ViewNotes: String, CaseIterable, Identifiable {
         case tree
         case list
-
+        
         var id: String { self.rawValue }
         
         var viewAction: () {
@@ -354,13 +355,13 @@ struct ViewPicker: View {
                     .scaledToFit()
                     .frame(width: 25.0, height: 25.0)
                     .tag(ViewNotes.tree)
-                    //.help("View notes as tree") /// FIXME: why don't the help tags don't display for each option?
+                //.help("View notes as tree") /// FIXME: why don't the help tags don't display for each option?
                 Image("ListView", label: Text("List View"))
                     .resizable()
                     .scaledToFit()
                     .frame(width: 25.0, height: 25.0)
                     .tag(ViewNotes.list)
-                    //.help("View notes as list")
+                //.help("View notes as list")
             }
             .pickerStyle(SegmentedPickerStyle())
             .help("View notes as tree or list")

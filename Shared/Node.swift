@@ -125,12 +125,11 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
     }
     
     //MARK: Text settings
-    struct TextSettings {
-        private(set) var weight: Font.Weight
-        private(set) var isItalicized: Bool
-        private(set) var isUnderlined: Bool
-        private(set) var foregroundColor: Color?
-        private(set) var highlightColor: Color?
+    class TextSettings: ObservableObject {
+        @Published private(set) var weight: Font.Weight
+        @Published public var isItalicized: Bool
+        @Published private(set) var foregroundColor: Color?
+        @Published private(set) var highlightColor: Color?
         
         // font is private to force users to use getFont() which applies formatting on call
         private var font: Font
@@ -138,8 +137,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         init() {
             weight = .regular
             isItalicized = false
-            isUnderlined = false
-            foregroundColor = nil
+            foregroundColor = Color("Inverted")
             highlightColor = nil
             font = .system(.body)
         }
@@ -159,32 +157,28 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
             return stylizedFont
         }
         
-        mutating func setWeight(_ newWeight: Font.Weight) {
+        func setWeight(_ newWeight: Font.Weight) {
             weight = newWeight
         }
         
-        mutating func setItalicized(_ boolean: Bool) {
+        func setItalicized(_ boolean: Bool) {
             isItalicized = boolean
         }
         
-        mutating func setFont(_ newFont: Font) {
+        func setFont(_ newFont: Font) {
             font = newFont
         }
         
-        mutating func setForeground(color: Color) {
+        func setForeground(color: Color) {
             foregroundColor = color
         }
         
-        mutating func setHighlight(color: Color) {
+        func setHighlight(color: Color) {
             highlightColor = color
         }
         
-        mutating func setUnderline(_ boolean: Bool) {
-            isUnderlined = boolean
-        }
-        
         // TODO: reset font settings function
-        mutating func reset() {
+        func reset() {
             weight = .regular
             isItalicized = false
             foregroundColor = .black

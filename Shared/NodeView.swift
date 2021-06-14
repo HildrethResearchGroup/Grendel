@@ -15,7 +15,7 @@ extension NSTextView {
             backgroundColor = .clear //<<here clear
             drawsBackground = true
         }
-
+        
     }
 }
 
@@ -23,7 +23,7 @@ extension NSTextView {
 struct NodeView: View {
     @ObservedObject var node: Node<String>
     @State var shown: Bool = true
-    var ts: Node<String>.TextSettings
+    @ObservedObject var ts: Node<String>.TextSettings
     var width: CGFloat
     var radius: CGFloat
     var spacing: CGFloat
@@ -61,13 +61,14 @@ struct NodeView: View {
                     }
                 }
                 
-                //            .if(ts.isUnderlined) { view in
-                //                view.underline()
-                //            }
-                
+                .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
                 .font(ts.getFont())
                 .foregroundColor(ts.foregroundColor)
-                .frame(minWidth: nil, idealWidth: width, maxWidth: width, minHeight: 10, idealHeight: nil, maxHeight: nil, alignment: .top)
+                .padding(15)
+                .background(
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .fill(ts.highlightColor ?? Color("Default"))
+                )
                 .fixedSize(horizontal: false, vertical: true)
                 .if(!shown){view in
                     view.disabled(shown)
@@ -79,7 +80,6 @@ struct NodeView: View {
             createBackgroundRectangle()
         )
         .padding(.trailing, spacing)
-        
     }
     
     private func createBackgroundRectangle() -> some View {
