@@ -2,7 +2,7 @@
 //  OutlinerApp.swift
 //  Shared
 //
-//  Created by Mines CS Field Session Student on 5/24/21.
+//  Created by Team Illus-tree-ous (Mines CS Field Session) on 5/24/21.
 //
 
 import SwiftUI
@@ -15,80 +15,82 @@ struct OutlinerApp: App {
             .windowToolbarStyle(UnifiedWindowToolbarStyle(showsTitle: false))
     }
     
-    // Custom scene that handles the exporting of files and the
-    // addition of the menu buttons to do so
+    /**
+     Handles the exporting of files and the addition of the menu buttons to do so.
+     */
     struct DocumentWindow: Scene {
-        // used as a SwiftUI workaround to access members of the file var inside ContentView
+        // Used as a SwiftUI workaround to access members of the file var inside ContentView
         private let exportCommand = PassthroughSubject<Void, Never>()
         
         var body : some Scene {
             DocumentGroup(newDocument: OutlinerDocument()) { file in
                 ContentView(file.$document)
-                    // export to text file
+                    // Export to text file
                     .onReceive(exportCommand) { _ in
                         do {
-                            // get the name of the file, including extension
+                            // Get the name of the file, including extension
                             let fileName = file.fileURL?.lastPathComponent
                             
-                            // either chooses to save to the same directory or falls back to the documents folder
+                            // Either chooses to save to the same directory or falls back to the documents folder
                             let directory = file.fileURL?.deletingLastPathComponent() ?? getDocumentsFolder()
                             
-                            // writes to the predetermined filename or uses 'output' if it cannot be found
+                            // Writes to the predetermined filename or uses 'output' if it cannot be found
                             let outputFile = directory.appendingPathComponent(fileName ?? "output.tree").appendingPathExtension("txt")
-                            
                             
                             print("Output URL: " + outputFile.path)
                             
-                            // get contents of file
+                            // Get contents of file
                             let text = try file.document.exportToText()
                             
-                            // write to the given file
+                            // Write to the given file
                             try text.write(to: outputFile, atomically: true, encoding: .utf8)
                         } catch let e {
                             print("Export error:\n" + e.localizedDescription)
                         }
                     }
             }
-            // adding custom commands with keybinds for main actions
-            // functionality explained in each action function
+            // Adding custom commands with keybinds for main actions
+            // Functionality explained in each action function
             .commands {
                 CommandGroup(after: .saveItem) {
                     Button("Export to text file") {
                         exportCommand.send()
                     }
                 }
-                CommandMenu("Editor"){
-                    Button("Delete"){
+                CommandMenu("Editor") {
+                    Button("Delete") {
                         deleteAction()
                     }.keyboardShortcut(.delete, modifiers: [.shift])
                     
-                    Button("Add Item"){
+                    Button("Add Item") {
                         addItemAction()
                     }.keyboardShortcut(.return, modifiers: [])
                     
-                    Button("Add Child"){
+                    Button("Add Child") {
                         addChildAction()
                     }.keyboardShortcut(.return, modifiers: [.shift])
                     
-                    Button("Indent"){
+                    Button("Indent") {
                         indentAction()
                     }.keyboardShortcut(.tab, modifiers: [])
                     
-                    Button("Outdent"){
+                    Button("Outdent") {
                         outdentAction()
                     }.keyboardShortcut(.tab, modifiers: [.shift])
                 }
-                CommandMenu("Node"){
-                    
-                    Button("Toggle Children"){
+                CommandMenu("Node") {
+                    Button("Toggle Children") {
                         toggleAction()
                     }
                     
-                    Button("Text"){
-                        textAction()
+                    Button("Font") {
+                        fontAction()
                     }
                     
-                    
+                    Button("Colors") {
+                        // FIXME: Should open the color menu
+                        // colorAction()
+                    }
                 }
                 CommandMenu("Selection") {
                     Button("Select Children") {
@@ -120,13 +122,15 @@ struct OutlinerApp: App {
         }
     }
 }
-
-// helper function for finding a safe place to store the file
-// in production, it is intended to save to the user's documents folder
+/**
+ Helper function for finding a safe place to store the file. In production, it is intended to save to the user's documents folder.
+ 
+ - Returns: A URL to the user's documents directory.
+ */
 func getDocumentsFolder() -> URL {
-    // find all possible documents directories for this user
+    // Find all possible documents directories for this user
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     
-    // just send back the first one, which ought to be the only one
+    // Just send back the first one, which ought to be the only one
     return paths[0]
 }

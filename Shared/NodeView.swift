@@ -2,23 +2,23 @@
 //  NodeView.swift
 //  Outliner
 //
-//  Created by Mines CS Field Session Student on 6/7/21.
+//  Created by Team Illus-tree-ous (Mines CS Field Session) on 6/7/21.
 //
 
 import SwiftUI
 
-//Makes the TextEditor background clear so that the background can correctly show through.
-
+/**
+ Makes the `TextEditor` background clear so that the background can correctly show through.
+ */
 extension NSTextView {
     open override var frame: CGRect {
         didSet {
-            backgroundColor = .clear //<<here clear
+            backgroundColor = .clear // << here clear
             drawsBackground = true
         }
         
     }
 }
-
 
 struct NodeView: View {
     @ObservedObject var node: Node<String>
@@ -46,17 +46,17 @@ struct NodeView: View {
                 .padding([.leading, .top, .bottom], spacing/2)
             // The text editor
             TextEditor(text: $node.content)
-                .onChange(of: node.content){value in
+                .onChange(of: node.content) { value in
                     
-                    //Detects when enter is pressed and takes the user out of the textEditor.
+                    // Detects when enter is pressed and takes the user out of the textEditor.
                     shown = true
                     document!.wrappedValue.deselectAll()
                     node.selected = true
-                    if value.contains("\n"){
+                    if value.contains("\n") {
                         node.content = value.replacingOccurrences(of: "\n", with: "")
                         shown = false
                     }
-                    if value.contains("\t"){
+                    if value.contains("\t") {
                         node.content = value.replacingOccurrences(of: "\t", with: "")
                         shown = false
                     }
@@ -64,12 +64,13 @@ struct NodeView: View {
                 .font(ts.getFont())
                 .foregroundColor(ts.foregroundColor)
                 .fixedSize(horizontal: false, vertical: true)
-                .if(!shown){view in
+                .if(!shown) { view in
                     view.disabled(shown)
                 }
                 .padding(.leading, spacing/4)
                 .padding([.trailing, .bottom, .top], spacing/2)
-        }.frame(maxWidth: node.width - spacing, idealHeight: 0)
+        }
+        .frame(maxWidth: node.width - spacing, idealHeight: 0)
         .background(
             createBackgroundRectangle()
         )
@@ -83,22 +84,22 @@ struct NodeView: View {
             } else {
                 RoundedRectangle(cornerRadius: radius).fill(ts.highlightColor ?? Color("Default"))
             }
-
         }
     }
 }
 
-
-
-
-// allows for easy application of view modifiers based on a condition
-// source: https://www.avanderlee.com/swiftui/conditional-view-modifier/
+/**
+ Allows for easy application of view modifiers based on a condition.
+ [Source](https://www.avanderlee.com/swiftui/conditional-view-modifier/)
+ */
 extension View {
-    // Applies the given transform if the given condition evaluates to true.
-    // - Parameters:
-    //   - condition: The condition to evaluate.
-    //   - transform: The transform to apply to the source `View`.
-    // - Returns: Either the original `View` or the modified `View` if the condition is `true`.
+    /**
+     Applies the given transform if the given condition evaluates to true.
+     - Parameters:
+       - condition: The condition to evaluate
+       - transform: The transform to apply to the source `View`
+     - Returns: Either the original `View` or the modified `View` if the condition is `true`
+     */
     @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
         if condition {
             transform(self)

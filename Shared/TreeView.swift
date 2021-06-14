@@ -2,19 +2,18 @@
 //  TreeView.swift
 //  Outliner
 //
-//  Created by Mines CS Field Session Student on 6/4/21.
+//  Created by Team Illus-tree-ous (Mines CS Field Session) on 6/4/21.
 //
 
 import SwiftUI
 
-//let widths: Array<CGFloat> = [100, 300, 100, 100, 100, 100, 100]
-// MARK: Drawing consts
+// let widths: Array<CGFloat> = [100, 300, 100, 100, 100, 100, 100]
+// MARK: Drawing Constants
 private let radius: CGFloat = 5
 private let spacing: CGFloat = 20
 
-
 struct TreeView: View {
-    @ObservedObject var outlinerDocument: OutlinerDocument// = OutlinerDocument()
+    @ObservedObject var outlinerDocument: OutlinerDocument // = OutlinerDocument()
     var body: some View {
         Diagram(currNode: outlinerDocument.tree.rootNode, makeNodeView: { (value: Node<String>) in
 
@@ -57,9 +56,9 @@ struct Diagram<V: View>: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            if currNode.depth != 0{
+            if currNode.depth != 0 {
                 makeNodeView(currNode)
-                    .anchorPreference(key: Key.self, value: .topLeading, transform: { // the anchor point
+                    .anchorPreference(key: Key.self, value: .topLeading, transform: { // The anchor point
                         [self.currNode.id: $0]
                     })
             }
@@ -84,7 +83,7 @@ struct Diagram<V: View>: View {
                                     parentWidth: currNode.width,
                                     radius: radius
                                 )
-                                .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // set stroke of the lines
+                                .stroke(Color.gray, style: StrokeStyle(lineWidth: radius/3, dash: [radius/3])) // Set stroke of the lines
                             } else {
                                 NodeHiddenLine(
                                     from: proxy[centers[self.currNode.id]!], parentWidth: currNode.width)
@@ -98,6 +97,9 @@ struct Diagram<V: View>: View {
     }
 }
 
+/**
+ Draws a line connecting a node to its visible children.
+ */
 struct NodeConnectingLine: Shape {
     let offset: CGFloat = 10 + 17.0/2
 
@@ -141,7 +143,7 @@ struct NodeConnectingLine: Shape {
             if !firstChild {
                 // Draw down to the node that needs to the child node
                 if lastChild {
-                    // For the last child add a curve
+                    // For the last child, add a curve
                     p.addLine(to: CGPoint(x: (from.x + to.x) / 2, y: to.y - radius))
                     p.addArc(center: CGPoint(
                                 x: (from.x + to.x) / 2 + radius,
@@ -151,7 +153,7 @@ struct NodeConnectingLine: Shape {
                              endAngle: Angle(degrees: 90),
                              clockwise: true)
                 } else {
-                    // For other nodes just draw a line down
+                    // For other nodes, just draw a line down
                     p.addLine(to: CGPoint(x: (from.x + to.x) / 2, y: to.y))
                 }
             }
@@ -160,6 +162,9 @@ struct NodeConnectingLine: Shape {
     }
 }
 
+/**
+ Draws a line connecting a node to its hidden children.
+ */
 struct NodeHiddenLine: Shape {
     let offset: CGFloat = 10 + 17.0/2
     var parentWidth: CGFloat

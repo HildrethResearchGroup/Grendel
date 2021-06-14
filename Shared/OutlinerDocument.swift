@@ -2,7 +2,7 @@
 //  OutlinerDocument.swift
 //  Shared
 //
-//  Created by Mines CS Field Session Student on 5/24/21.
+//  Created by Team Illus-tree-ous (Mines CS Field Session) on 5/24/21.
 //
 
 import SwiftUI
@@ -15,14 +15,12 @@ extension UTType {
 }
 
 class OutlinerDocument: FileDocument, ObservableObject {
-    
     @Published var tree: Tree
     var nodeCopyBuffer = Array<Node<String>>()
     
     init() {
         tree = Tree()
     }
-
     
     static var readableContentTypes: [UTType] { [.treeType] }
     
@@ -37,12 +35,17 @@ class OutlinerDocument: FileDocument, ObservableObject {
         let data = try JSONEncoder().encode(tree)
         return .init(regularFileWithContents: data)
     }
-    
-    
+
+    /**
+     Exports the tree to a plain text format.
+     
+     - Returns: A string representation of the entire tree
+     */
+
     func exportToText() throws -> String {
         var str: String = ""
         
-        // starts with children since the root node doesn't have any content
+        // Starts with children since the root node doesn't have any content
         for child in tree.rootNode.children {
             str += generateTreeString(root: child)
         }
@@ -50,20 +53,27 @@ class OutlinerDocument: FileDocument, ObservableObject {
         return str
     }
     
+    /**
+     Generates a string representation of a tree.
+     
+     - Parameter root: The root node of the subtree
+     
+     - Returns: A string representation of the tree
+     */
     func generateTreeString(root: Node<String>) -> String {
         var temp: String = ""
         let depth = root.depth
         
-        // add a tab for each layer of depth
-        // we use depth-1 because we are skipping over the parent at depth 0
-        for _ in 0..<depth-1 {
+        // Add a tab for each layer of depth
+        // We use depth-1 because we are skipping over the parent at depth 0
+        for _ in 0 ..< depth-1 {
             temp += "\t"
         }
         
-        // add the content of the current node
+        // Add the content of the current node
         temp += root.content + "\n"
         
-        // add the content of each child node recursively
+        // Add the content of each child node recursively
         for child in root.children {
             temp += generateTreeString(root: child)
         }
@@ -71,22 +81,33 @@ class OutlinerDocument: FileDocument, ObservableObject {
         return temp
     }
     
-    // MARK: intent functions
-    // Deselects a node while allowing for multiple nodes to still be selected
+    // MARK: Intent Functions
+    
+    /**
+     Deselects a node while allowing for multiple nodes to still be selected.
+     
+     - Parameter node: The node to deselect
+     */
     func deselectMultiple(node: Node<String>) {
-        tree.applyFuncToNodes(filter: {currNode in currNode.id == node.id}, modifyingFunc: {currNode in currNode.selected = false}, maxDepth: node.depth)
+        tree.applyFuncToNodes(filter: { currNode in currNode.id == node.id }, modifyingFunc: { currNode in currNode.selected = false }, maxDepth: node.depth)
         if tree.getNumSelected() == 0 {
             tree.selectedLevel = nil
         }
     }
     
-    // Deselect all nodes
+    /**
+     Deselects all nodes.
+     */
     func deselectAll() {
-        tree.applyFuncToNodes(filter: {node in true}, modifyingFunc: {node in node.selected = false})
+        tree.applyFuncToNodes(filter: { node in true }, modifyingFunc: { node in node.selected = false })
         tree.selectedLevel = nil
     }
     
-    // select a node allowing for there to be multiple selected
+    /**
+     Selects a node while other nodes are already selected so multiple can be selected.
+     
+     - Parameter node: The node to select
+     */
     func selectMultiple(node: Node<String>) {
         // Find the level being selected and deselect selected nodes not on that level
         switch tree.selectedLevel {
@@ -99,27 +120,35 @@ class OutlinerDocument: FileDocument, ObservableObject {
             }
         }
         
-        // select the node
+        // Select the node
         node.selected = true
     }
     
-    // select a node allowing for a singular node to be selected
+    /**
+     Selects a node allowing for a singular node to be selected.
+     
+     - Parameter node: The node to select
+     */
     func selectSingle(node: Node<String>) {
         deselectAll()
         tree.selectedLevel = node.depth
         node.selected = true
     }
     
-    // Select all nodes in a column (depth)
+    /**
+     Selects all nodes in a column (depth).
+     */
     func selectAll() {
-        tree.applyFuncToNodes(filter: {node in tree.selectedLevel == node.depth}, modifyingFunc: {node in node.selected = true}, maxDepth: tree.selectedLevel)
+        tree.applyFuncToNodes(filter: { node in tree.selectedLevel == node.depth }, modifyingFunc: { node in node.selected = true }, maxDepth: tree.selectedLevel)
     }
     
-    // Select all children nodes of selected nodes
+    /**
+     Selects all children nodes of selected nodes.
+     */
     func selectAllChildrenOfSelected() {
         let selectedArray = tree.getSelectedArray()
         deselectAll()
-        tree.applyFuncToNodes(filter: {childNode in
+        tree.applyFuncToNodes(filter: { childNode in
             var contains = false
             for selectedNode in selectedArray {
                 if childNode.parent!.id == selectedNode.id {
@@ -128,12 +157,15 @@ class OutlinerDocument: FileDocument, ObservableObject {
                 }
             }
             return contains
-        }, modifyingFunc: {childNode in
+        }, modifyingFunc: { childNode in
             tree.selectedLevel = childNode.depth
             childNode.selected = true
         }, minDepth: (tree.selectedLevel != nil && tree.selectedLevel! > 1 ? tree.selectedLevel! : 1), maxDepth: tree.selectedLevel)
     }
     
+    /**
+     Selects all parent nodes of selected nodes.
+     */
     func selectAllParentsOfSelected() {
         if tree.selectedLevel == 1 {
             print("Alert: can't select parent of left most level")
@@ -141,7 +173,7 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
         let selectedArray = tree.getSelectedArray()
         deselectAll()
-        tree.applyFuncToNodes(filter: {childNode in
+        tree.applyFuncToNodes(filter: { childNode in
             var contains = false
             for selectedNode in selectedArray {
                 if childNode.id == selectedNode.id {
@@ -150,50 +182,77 @@ class OutlinerDocument: FileDocument, ObservableObject {
                 }
             }
             return contains
-        }, modifyingFunc: {childNode in
+        }, modifyingFunc: { childNode in
             childNode.parent!.selected = true
             tree.selectedLevel = childNode.parent!.depth
         }, minDepth: (tree.selectedLevel != nil && tree.selectedLevel! > 1 ? tree.selectedLevel! : 1), maxDepth: tree.selectedLevel)
     }
     
-    // Move a node and all its children to be under a new parent
+    // MARK: Node Editing Functions
+    
+    /**
+     Moves a node and all its children to be under a new parent.
+     
+     - Parameters:
+        - node: The root node of the subtree to move
+        - toParent: The parent node to move under
+        - insertIndex: The index to insert the new node at
+     */
     func move(node: Node<String>, toParent: Node<String>, at insertIndex: Int) {
         tree.move(node, toParent: toParent, at: insertIndex)
     }
     
-    // Move under a child node
+    /**
+     Moves under a child node.
+     
+     - Parameters:
+        - movingNode: The node to move
+        - aboveNode: The node that will be above the moved node
+     */
     func moveUnder(movingNode: Node<String>, aboveNode: Node<String>) {
         let insertIndex = aboveNode.parent!.indexOfChild(aboveNode)! + 1
         tree.move(movingNode, toParent: aboveNode.parent!, at: insertIndex)
     }
     
-    // Move above a child node
+    /**
+     Moves above a child node.
+     
+     - Parameters:
+        - movingNode: The node to move
+        - belowNode: The node that will be below the moved node
+     */
     func moveAbove(movingNode: Node<String>, belowNode: Node<String>) {
         let insertIndex = belowNode.parent!.indexOfChild(belowNode)!
         tree.move(movingNode, toParent: belowNode.parent!, at: insertIndex)
     }
     
-    // Indent all selected nodes
+    /**
+     Indents all selected nodes.
+     */
     func indentSelected() {
         objectWillChange.send()
-        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in tree.indent(node: node)})
+        tree.applyFuncToNodes(filter: { node in node.selected }, modifyingFunc: { node in tree.indent(node: node) })
         // Increment the selected level to the match
         if tree.selectedLevel != nil {
             tree.selectedLevel! += 1
         }
     }
     
-    // Outdent all selected nodes
+    /**
+     Outdents all selected nodes.
+     */
     func outdentSelected() {
         objectWillChange.send()
-        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in tree.outdent(node: node)}, reverse: true)
+        tree.applyFuncToNodes(filter: { node in node.selected }, modifyingFunc: { node in tree.outdent(node: node) }, reverse: true)
         // Decrement to match the new selected level
         if tree.selectedLevel != nil {
             tree.selectedLevel! -= 1
         }
     }
     
-    // Duplicate selected nodes and place above
+    /**
+     Duplicates selected nodes and place above.
+     */
     func duplicateSelected() {
         objectWillChange.send()
         copyNodesSelected()
@@ -209,6 +268,11 @@ class OutlinerDocument: FileDocument, ObservableObject {
         //        }
     }
     
+    /**
+     Generate a string representation of the selected nodes.
+     
+     - Returns: A string representation of the selected nodes
+     */
     func generateTreeStringSelected() -> String {
         var treeString = ""
         let selectedNodes = tree.getSelectedArray()
@@ -220,7 +284,12 @@ class OutlinerDocument: FileDocument, ObservableObject {
         return treeString
     }
     
-    func newline(createUnder: Bool = true) {
+    /**
+     Creates a new line.
+     
+     - Parameter createUnder: True if there is a node to be above the new node, default is true
+     */
+    func newLine(createUnder: Bool = true) {
         objectWillChange.send()
         let selectedNodes = tree.getSelectedArray()
         if selectedNodes.count != 1 && tree.rootNode.children.count > 0 {
@@ -239,30 +308,37 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
-    func newchild() {
+    /**
+     Creates a new child.
+     */
+    func newChild() {
         objectWillChange.send()
         
         let selectedNodes = tree.getSelectedArray()
         if selectedNodes.count != 1 {
             print("Alert: couldn't add new line with \(selectedNodes.count) nodes selected")
         } else {
-            
             var newNode : Node<String>
-            if(tree.levelWidths.count == selectedNodes[0].depth || selectedNodes[0].depth < 0){
+            if(tree.levelWidths.count == selectedNodes[0].depth || selectedNodes[0].depth < 0) {
                 newNode = Node<String>(content: "", width: 100.0)
-            }else{
+            } else {
                 newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth])
             }
             move(node: newNode, toParent: selectedNodes.first!, at: selectedNodes.first!.children.endIndex)
         }
     }
     
+    /**
+     Deletes the selected node(s).
+     */
     func deleteSelected() {
         objectWillChange.send()
-        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in tree.deleteNode(node: node)})
+        tree.applyFuncToNodes(filter: { node in node.selected }, modifyingFunc: { node in tree.deleteNode(node: node) })
     }
     
-    // Toggle family
+    /**
+     Toggles the selected family.
+     */
     func toggleSelected() {
         objectWillChange.send()
         let selectedNodes = tree.getSelectedArray()
@@ -277,14 +353,20 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
+    /**
+     Cuts the selected nodes.
+     */
     func cutNodesSelected() {
         objectWillChange.send()
         nodeCopyBuffer.removeAll()
         copyNodesSelected()
-        //toggleSelected()
+        // toggleSelected()
         deleteSelected()
     }
     
+    /**
+     Copies the selected nodes.
+     */
     func copyNodesSelected() {
         nodeCopyBuffer.removeAll()
         let selectedNodes = tree.getSelectedArray()
@@ -293,9 +375,12 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
+    /**
+     Pastes the selected nodes.
+     */
     func pasteNodesSelected() {
         objectWillChange.send()
-        tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in
+        tree.applyFuncToNodes(filter: { node in node.selected }, modifyingFunc: { node in
             node.selected = false
             for pasteNode in nodeCopyBuffer {
                 let copyOfPasteNode = tree.copySubtree(rootOfSubtree: pasteNode)
@@ -305,7 +390,11 @@ class OutlinerDocument: FileDocument, ObservableObject {
         })
     }
     
-    // Text formatting intent functions
+    // MARK: Text Formatting Intent Functions
+    
+    /**
+     Bolds the selected nodes.
+     */
     func boldSelected() {
         let selectedNodes = tree.getSelectedArray()
         for selectedNode in selectedNodes {            
@@ -317,6 +406,9 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
+    /**
+     Italicizes the selected nodes.
+     */
     func italicizeSelected() {
         let selectedNodes = tree.getSelectedArray()
         for selectedNode in selectedNodes {
@@ -324,6 +416,11 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
+    /**
+     Highlights the selected nodes.
+     
+     - Parameter colorString: The name of the color
+     */
     func highlightSelected(colorString: String) {
         let color = Color(colorString)
         let selectedNodes = tree.getSelectedArray()
@@ -332,6 +429,11 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
+    /**
+     Change the text color of the selected nodes.
+     
+     - Parameter colorString: The name of the color
+     */
     func colorSelected(colorString: String) {
         let color = Color(colorString)
         let selectedNodes = tree.getSelectedArray()
@@ -339,5 +441,4 @@ class OutlinerDocument: FileDocument, ObservableObject {
             selectedNode.textSettings.setForeground(color: color)
         }
     }
-    
 }

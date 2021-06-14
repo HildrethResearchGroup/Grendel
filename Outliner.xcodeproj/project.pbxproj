@@ -35,6 +35,8 @@
 		3FDF3D3D266ABA3200AA2214 /* TreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3D3B266ABA3200AA2214 /* TreeView.swift */; };
 		3FDF3D42266EB9EE00AA2214 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3D41266EB9EE00AA2214 /* NodeView.swift */; };
 		3FDF3D43266EB9EE00AA2214 /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDF3D41266EB9EE00AA2214 /* NodeView.swift */; };
+		E83B3F972677EF1D00389C3E /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83B3F962677EF1D00389C3E /* Toolbar.swift */; };
+		E83B3F982677EF1E00389C3E /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83B3F962677EF1D00389C3E /* Toolbar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +80,7 @@
 		3FDF3CF2265C465900AA2214 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		3FDF3D3B266ABA3200AA2214 /* TreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeView.swift; sourceTree = "<group>"; };
 		3FDF3D41266EB9EE00AA2214 /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
+		E83B3F962677EF1D00389C3E /* Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,13 +133,14 @@
 				3FDF3CAF265C406D00AA2214 /* OutlinerApp.swift */,
 				3FDF3CB0265C406D00AA2214 /* OutlinerDocument.swift */,
 				3FDF3CB1265C406D00AA2214 /* ContentView.swift */,
+				E83B3F962677EF1D00389C3E /* Toolbar.swift */,
+				3FDF3CF2265C465900AA2214 /* Tree.swift */,
 				3FDF3D3B266ABA3200AA2214 /* TreeView.swift */,
 				3FDF3CEF265C41A400AA2214 /* Node.swift */,
 				3FDF3D41266EB9EE00AA2214 /* NodeView.swift */,
-				3FDF3CF2265C465900AA2214 /* Tree.swift */,
-				3FDF3CB2265C406E00AA2214 /* Assets.xcassets */,
 				3F23C2E9266E8C23006B3D98 /* DragBar.swift */,
 				3F23C2EC266E8C60006B3D98 /* DragDivider.swift */,
+				3FDF3CB2265C406E00AA2214 /* Assets.xcassets */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -353,6 +357,7 @@
 				3FDF3CD9265C406E00AA2214 /* OutlinerApp.swift in Sources */,
 				3FDF3D42266EB9EE00AA2214 /* NodeView.swift in Sources */,
 				3F23C2EA266E8C23006B3D98 /* DragBar.swift in Sources */,
+				E83B3F972677EF1D00389C3E /* Toolbar.swift in Sources */,
 				3FDF3CDD265C406E00AA2214 /* ContentView.swift in Sources */,
 				3FDF3CF0265C41A400AA2214 /* Node.swift in Sources */,
 			);
@@ -369,6 +374,7 @@
 				3FDF3CDA265C406E00AA2214 /* OutlinerApp.swift in Sources */,
 				3FDF3D43266EB9EE00AA2214 /* NodeView.swift in Sources */,
 				3F23C2EB266E8C23006B3D98 /* DragBar.swift in Sources */,
+				E83B3F982677EF1E00389C3E /* Toolbar.swift in Sources */,
 				3FDF3CDE265C406E00AA2214 /* ContentView.swift in Sources */,
 				3FDF3CF1265C41A400AA2214 /* Node.swift in Sources */,
 			);

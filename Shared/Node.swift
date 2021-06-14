@@ -2,7 +2,7 @@
 //  Node.swift
 //  Outliner
 //
-//  Created by Emily Hepperlen on 5/24/21.
+//  Created by Team Illus-tree-ous (Mines CS Field Session) on 5/24/21.
 //
 
 import SwiftUI
@@ -54,43 +54,64 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         }
     }
     
-    func getLevelWidths(level: Int) -> CGFloat{
+
+    func getLevelWidths(level: Int) -> CGFloat {
         var size: CGFloat = 0.0
         
-        if(depth == 1+level){
-            for node in children{
+        if(depth == 1 + level) {
+            for node in children {
                 size = node.width
             }
             
-            if(size == 0.0){
+            if(size == 0.0) {
                 size = (parent?.getLevelWidths(level: level))!
             }
-        }else if(depth == level){
+        } else if(depth == level) {
             size = (parent?.getLevelWidths(level: level))!
-        }else{
-            
         }
-        
+    
         return size
     }
 
+    // MARK: Modify Node
     
-    // MARK: modify node
+    /**
+     Inserts a node as a child.
+     
+     - Parameters:
+        - child: The child node to add
+        - insertIndex: The index to insert the new node at
+     */
     func insertChild(child: Node, at insertIndex: Int) {
         children.insert(child, at: insertIndex)
         child.parent = self
     }
     
+    /**
+     Removes the existing child node.
+     
+     - Parameter child: The child node to remove
+     */
     func removeChild(child: Node) {
         let indexToRemove = indexOfChild(child)
         children.remove(at: indexToRemove!)
         child.parent = nil
     }
     
+    /**
+     Gets a copy of the node.
+     
+     - Returns: A copy of the node's text content
+     */
     func copy() -> Node {
         return Node(content: content, width: width)
     }
     
+    /**
+     Gets a copy of the node's text content, formatting, and shown children.
+     
+     - Returns: A copy of the node and its information
+     */
     func copyAll() -> Node {
         var copiedChildren = Array<Node>()
         
@@ -103,30 +124,36 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
                     childrenShown: self.childrenShown, width: width)
     }
     
-    func getParent() -> Node{
+    /**
+     Gets the parent of the node.
+     
+     - Returns: The node's parent node.
+     */
+    func getParent() -> Node {
         return self.parent!
     }
   
-    func checkMaxDepth() -> Int{
-        if(children.count == 0){
+    /**
+     Checks how many children the node has.
+     
+     - Returns: The maximum depth of the node's subtrees.
+     */
+    func checkMaxDepth() -> Int {
+        if(children.count == 0) {
             return depth
-        }else{
+        } else {
             var maxValue = 0
-            for child in children{
+            for child in children {
                 let tempValue = child.checkMaxDepth()
-                if( tempValue > maxValue ){
+                if(tempValue > maxValue) {
                     maxValue = tempValue
                 }
-                
             }
             return maxValue
-            
         }
     }
     
-    
-    
-    // MARK: info in node
+    // MARK: Information in Node
     func indexOfChild(_ child: Node) -> Int? {
         for (index, nodesChild) in children.enumerated() {
             if child.id == nodesChild.id {
@@ -136,7 +163,7 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         return nil
     }
     
-    // MARK: JSON encoding
+    // MARK: JSON Encoding
     private enum CodingKeys : String, CodingKey {
         case children
         case content
@@ -159,15 +186,15 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         try container.encode(children, forKey: .children)
         try container.encode(content, forKey: .content)
     }
-    
-    //MARK: Text settings
+
+    // MARK: Text Settings
     class TextSettings: ObservableObject {
         @Published private(set) var weight: Font.Weight
         @Published public var isItalicized: Bool
         @Published private(set) var foregroundColor: Color?
         @Published private(set) var highlightColor: Color?
         
-        // font is private to force users to use getFont() which applies formatting on call
+        // Font is private to force users to use getFont() which applies formatting on call
         private var font: Font
         
         init() {
@@ -178,9 +205,13 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
             font = .system(.body)
         }
         
-        // this function returns a copy of the font with appropriate modifiers
+        /**
+         Applies the correct formatting to the font.
+         
+         - Returns: A copy of the font with appropriate modifiers
+         */
         func getFont() -> Font {
-            // apply bolding, italics, etc. to a copy of the font
+            // Apply bolding, italics, etc. to a copy of the font
             var stylizedFont: Font
             stylizedFont = font
             
@@ -212,8 +243,8 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         func setHighlight(color: Color) {
             highlightColor = color
         }
-        
-        // TODO: reset font settings function
+
+        // TODO: Reset font settings function.
         func reset() {
             weight = .regular
             isItalicized = false
@@ -228,6 +259,4 @@ extension Node: Equatable {
     static func == (lhs: Node<Content>, rhs: Node<Content>) -> Bool {
         return lhs.id == rhs.id
     }
-    
-    
 }
