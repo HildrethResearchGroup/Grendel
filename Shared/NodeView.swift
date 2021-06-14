@@ -15,7 +15,7 @@ extension NSTextView {
             backgroundColor = .clear //<<here clear
             drawsBackground = true
         }
-
+        
     }
 }
 
@@ -23,7 +23,7 @@ extension NSTextView {
 struct NodeView: View {
     @ObservedObject var node: Node<String>
     @State var shown: Bool = true
-    var ts: Node<String>.TextSettings
+    @ObservedObject var ts: Node<String>.TextSettings
     var width: CGFloat
     var radius: CGFloat
     
@@ -35,39 +35,40 @@ struct NodeView: View {
     }
     
     var body: some View {
-        TextEditor(text: $node.content)
-            .onChange(of: node.content){value in
+//        ZStack {
+//            RoundedRectangle(cornerRadius: radius)
+//                .fill(ts.highlightColor ?? .accentColor)
+            TextEditor(text: $node.content)
+                .onChange(of: node.content){value in
+                    
+                    //Detects when enter is pressed and takes the user out of the textEditor.
+                    shown = true
+                    document!.wrappedValue.deselectAll()
+                    node.selected = true
+                    if value.contains("\n"){
+                        node.content = value.replacingOccurrences(of: "\n", with: "")
+                        shown = false
+                    }
+                    if value.contains("\t"){
+                        node.content = value.replacingOccurrences(of: "\t", with: "")
+                        shown = false
+                    }
+                }
                 
-                //Detects when enter is pressed and takes the user out of the textEditor.
-                shown = true
-                document!.wrappedValue.deselectAll()
-                node.selected = true
-                if value.contains("\n"){
-                    node.content = value.replacingOccurrences(of: "\n", with: "")
-                    shown = false
+                .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
+                .font(ts.getFont())
+                .foregroundColor(ts.foregroundColor)
+                .padding(15)
+                .background(
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .fill(ts.highlightColor ?? Color("Default"))
+                )
+                .fixedSize(horizontal: false, vertical: true)
+                .if(!shown){view in
+                    view.disabled(shown)
                 }
-                if value.contains("\t"){
-                    node.content = value.replacingOccurrences(of: "\t", with: "")
-                    shown = false
-                }
-            }
-            
-            //            .if(ts.isUnderlined) { view in
-            //                view.underline()
-            //            }
-            
-            .font(ts.getFont())
-            .foregroundColor(ts.foregroundColor)
-            .frame(minWidth: nil, idealWidth: 100.0, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
-            .background(
-                RoundedRectangle(cornerRadius: 5.0)
-                    .fill(ts.highlightColor ?? Color.clear)
-            )
-            .fixedSize(horizontal: false, vertical: true)
-            .if(!shown){view in
-                view.disabled(shown)
-            }
-        
+//        }
+        .frame(minWidth: width, idealWidth: width, maxWidth: width, minHeight: 20.0, idealHeight: nil, maxHeight: nil, alignment: .top)
     }
 }
 

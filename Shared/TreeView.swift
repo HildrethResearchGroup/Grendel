@@ -21,13 +21,13 @@ struct TreeView: View {
                     if value.selected {
                         outlinerDocument.deselectMultiple(node: value)
                     } else {
-                            outlinerDocument.selectMultiple(node: value)
+                        outlinerDocument.selectMultiple(node: value)
                     }
                 })
                 .onTapGesture {
                     outlinerDocument.selectSingle(node: value)
                 }
-        })
+        }).frame(alignment: .topLeading)
     }
 }
 

@@ -18,56 +18,56 @@ class OutlinerDocument: FileDocument, ObservableObject {
     
     @Published var tree: Tree
     var nodeCopyBuffer = Array<Node<String>>()
-
-        init() {
-            tree = Tree()
-            
-            // TODO: remove below, was test code only
-            let nodeA = Node<String>(content: "yes")
-            nodeA.textSettings.setWeight(.bold)
-            tree.move(nodeA, toParent: tree.rootNode, at: 0)
-            let nodeAB = Node<String>(content: "AB")
-            tree.move(nodeAB, toParent: nodeA, at: 0)
-            let nodeABC = Node<String>(content: "ABC")
-            tree.move(nodeABC, toParent: nodeAB, at: 0)
-            let nodeAC = Node<String>(content: "AC")
-            tree.move(nodeAC, toParent: nodeA, at: 1)
-            let nodeACD = Node<String>(content: "ACD")
-            tree.move(nodeACD, toParent: nodeAC, at: 0)
-            let nodeAA = Node<String>(content: "AA")
-            tree.move(nodeAA, toParent: nodeA, at: 0)
-            let nodeB = Node<String>(content: "B")
-            tree.move(nodeB, toParent: tree.rootNode, at: 1)
-            let nodeX = Node<String>(content: "X")
-            tree.move(nodeX, toParent: nodeB, at: 0)
-            let nodeY = Node<String>(content: "Y")
-            tree.move(nodeY, toParent: nodeX, at: 0)
-            
-            nodeAC.childrenShown = false
-            
-            selectSingle(node: nodeA)
-            
-            tree.findMaxDepth()
-            
-    //        print(nodeY.depth)
-    //        tree.findMaxDepth()
-    //        print(tree.levelWidths)
-    //        print(tree.maxDepth)
-    //
-    //        let tree2: Tree
-    //        do {
-    //            let encoder = JSONEncoder()
-    //            encoder.outputFormatting = .prettyPrinted
-    //            let data = try encoder.encode(tree)
-    //            if let jsonString = String(data: data, encoding: .utf8) {
-    //              print(jsonString)
-    //            }
-    //            let decoder = JSONDecoder()
-    //            tree2 = try decoder.decode(Tree.self, from: data)
-    //        } catch {
-    //            print("UH Oh spagettios")
-    //        }
-        }
+    
+    init() {
+        tree = Tree()
+        
+        // TODO: remove below, was test code only
+        let nodeA = Node<String>(content: "yes")
+        nodeA.textSettings.setWeight(.bold)
+        tree.move(nodeA, toParent: tree.rootNode, at: 0)
+        let nodeAB = Node<String>(content: "AB")
+        tree.move(nodeAB, toParent: nodeA, at: 0)
+        let nodeABC = Node<String>(content: "ABC")
+        tree.move(nodeABC, toParent: nodeAB, at: 0)
+        let nodeAC = Node<String>(content: "AC")
+        tree.move(nodeAC, toParent: nodeA, at: 1)
+        let nodeACD = Node<String>(content: "ACD")
+        tree.move(nodeACD, toParent: nodeAC, at: 0)
+        let nodeAA = Node<String>(content: "AA")
+        tree.move(nodeAA, toParent: nodeA, at: 0)
+        let nodeB = Node<String>(content: "B")
+        tree.move(nodeB, toParent: tree.rootNode, at: 1)
+        let nodeX = Node<String>(content: "X")
+        tree.move(nodeX, toParent: nodeB, at: 0)
+        let nodeY = Node<String>(content: "Y")
+        tree.move(nodeY, toParent: nodeX, at: 0)
+        
+        nodeAC.childrenShown = false
+        
+        selectSingle(node: nodeA)
+        
+        tree.findMaxDepth()
+        
+        //        print(nodeY.depth)
+        //        tree.findMaxDepth()
+        //        print(tree.levelWidths)
+        //        print(tree.maxDepth)
+        //
+        //        let tree2: Tree
+        //        do {
+        //            let encoder = JSONEncoder()
+        //            encoder.outputFormatting = .prettyPrinted
+        //            let data = try encoder.encode(tree)
+        //            if let jsonString = String(data: data, encoding: .utf8) {
+        //              print(jsonString)
+        //            }
+        //            let decoder = JSONDecoder()
+        //            tree2 = try decoder.decode(Tree.self, from: data)
+        //        } catch {
+        //            print("UH Oh spagettios")
+        //        }
+    }
     
     static var readableContentTypes: [UTType] { [.treeType] }
     
@@ -83,7 +83,7 @@ class OutlinerDocument: FileDocument, ObservableObject {
         return .init(regularFileWithContents: data)
     }
     
-
+    
     func exportToText() throws -> String {
         var str: String = ""
         
@@ -115,7 +115,7 @@ class OutlinerDocument: FileDocument, ObservableObject {
         
         return temp
     }
-
+    
     // MARK: intent functions
     // Deselects a node while allowing for multiple nodes to still be selected
     func deselectMultiple(node: Node<String>) {
@@ -243,15 +243,15 @@ class OutlinerDocument: FileDocument, ObservableObject {
         objectWillChange.send()
         copyNodesSelected()
         pasteNodesSelected()
-//        let selectedNodes = tree.getSelectedArray()
-//
-//        // Insert all above the first selected node
-//        for selectedNode in selectedNodes {
-//            let copyOfSelectedNode = selectedNode.copy()
-//            moveAbove(movingNode: copyOfSelectedNode, belowNode: selectedNodes.first!)
-//            selectedNode.selected = false
-//            copyOfSelectedNode.selected = true
-//        }
+        //        let selectedNodes = tree.getSelectedArray()
+        //
+        //        // Insert all above the first selected node
+        //        for selectedNode in selectedNodes {
+        //            let copyOfSelectedNode = selectedNode.copy()
+        //            moveAbove(movingNode: copyOfSelectedNode, belowNode: selectedNodes.first!)
+        //            selectedNode.selected = false
+        //            copyOfSelectedNode.selected = true
+        //        }
     }
     
     func generateTreeStringSelected() -> String {
@@ -321,7 +321,6 @@ class OutlinerDocument: FileDocument, ObservableObject {
         deleteSelected()
     }
     
-    // TODO: copy
     func copyNodesSelected() {
         nodeCopyBuffer.removeAll()
         let selectedNodes = tree.getSelectedArray()
@@ -330,7 +329,6 @@ class OutlinerDocument: FileDocument, ObservableObject {
         }
     }
     
-    // TODO: paste
     func pasteNodesSelected() {
         objectWillChange.send()
         tree.applyFuncToNodes(filter: {node in node.selected}, modifyingFunc: {node in
@@ -343,5 +341,39 @@ class OutlinerDocument: FileDocument, ObservableObject {
         })
     }
     
+    // Text formatting intent functions
+    func boldSelected() {
+        let selectedNodes = tree.getSelectedArray()
+        for selectedNode in selectedNodes {            
+            if (selectedNode.textSettings.weight == .regular) {
+                selectedNode.textSettings.setWeight(.bold)
+            } else {
+                selectedNode.textSettings.setWeight(.regular)
+            }
+        }
+    }
+    
+    func italicizeSelected() {
+        let selectedNodes = tree.getSelectedArray()
+        for selectedNode in selectedNodes {
+            selectedNode.textSettings.isItalicized.toggle()
+        }
+    }
+    
+    func highlightSelected(colorString: String) {
+        let color = Color(colorString)
+        let selectedNodes = tree.getSelectedArray()
+        for selectedNode in selectedNodes {
+            selectedNode.textSettings.setHighlight(color: color)
+        }
+    }
+    
+    func colorSelected(colorString: String) {
+        let color = Color(colorString)
+        let selectedNodes = tree.getSelectedArray()
+        for selectedNode in selectedNodes {
+            selectedNode.textSettings.setForeground(color: color)
+        }
+    }
     
 }
