@@ -41,7 +41,7 @@ struct NodeView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             // Add the circle or triangle icon
-            NodeIcon(hasChildren: !node.children.isEmpty).fill(Color.secondary).frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center).padding(.trailing, 0)
+            NodeIcon(hasChildren: !node.children.isEmpty).fill(Color.gray).frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center).padding(.trailing, 0)
                 .padding([.leading, .top, .bottom], spacing/2)
             // The text editor
             TextEditor(text: $node.content)
@@ -61,14 +61,10 @@ struct NodeView: View {
                     }
                 }
                 
-                .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
+                //.border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
                 .font(ts.getFont())
                 .foregroundColor(ts.foregroundColor)
-                .padding(15)
-                .background(
-                    RoundedRectangle(cornerRadius: 5.0)
-                        .fill(ts.highlightColor ?? Color("Default"))
-                )
+                //.padding(15)
                 .fixedSize(horizontal: false, vertical: true)
                 .if(!shown){view in
                     view.disabled(shown)
@@ -87,7 +83,7 @@ struct NodeView: View {
             if node.selected {
                 RoundedRectangle(cornerRadius: radius).fill(Color.accentColor)
             } else {
-                RoundedRectangle(cornerRadius: radius).fill(BackgroundStyle())
+                RoundedRectangle(cornerRadius: radius).fill(Color("Default"))
             }
         }
     }
