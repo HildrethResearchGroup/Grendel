@@ -229,17 +229,12 @@ class OutlinerDocument: FileDocument, ObservableObject {
             if tree.rootNode.children.count == 0 {
                 let newNode = Node<String>(content: "", width: 100.0)
                 move(node: newNode, toParent: tree.rootNode, at: 0)
-                print("Okay")
             } else if createUnder {
                 let newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth-1])
                 moveUnder(movingNode: newNode, aboveNode: selectedNodes.first!)
-                print(tree.currentWidths[selectedNodes[0].depth-1])
-                print(1)
             } else {
                 let newNode = Node<String>(content: "", width: tree.currentWidths[selectedNodes[0].depth-1])
                 moveAbove(movingNode: newNode, belowNode: selectedNodes.first!)
-                print(tree.currentWidths[selectedNodes[0].depth-1])
-                print(2)
             }
         }
     }
