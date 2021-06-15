@@ -29,7 +29,7 @@ struct NodeView: View {
     
     init(node: Node<String>, radius: CGFloat = 5, spacing: CGFloat = 20) {
         self.node = node
-        //self.width = node.width
+        // self.width = node.width
         self.radius = radius
         self.spacing = spacing
         self.iconRadius = (spacing/2 + 17.0/2)/2
@@ -39,7 +39,10 @@ struct NodeView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             // Add the circle or triangle icon
-            NodeIcon(hasChildren: !node.children.isEmpty).fill(Color.gray).frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center).padding(.trailing, 0)
+            NodeIcon(hasChildren: !node.children.isEmpty)
+                .fill(Color("Inverted").opacity(0.5))
+                .frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center)
+                .padding(.trailing, 0)
                 .padding([.leading, .top, .bottom], spacing/2)
             // The text editor
             TextEditor(text: $node.content)
@@ -104,6 +107,9 @@ extension View {
     }
 }
 
+/**
+ Draws a triangle or circle icon by each node depending if it has circle or not.
+ */
 struct NodeIcon: Shape {
     let hasChildren: Bool
     let radius: CGFloat = (10 + 17.0/2)/2
