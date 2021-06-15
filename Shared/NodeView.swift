@@ -40,7 +40,7 @@ struct NodeView: View {
         HStack(alignment: .top, spacing: 0) {
             // Add the circle or triangle icon
             NodeIcon(hasChildren: !node.children.isEmpty)
-                .fill(Color("Inverted").opacity(0.5))
+                .fill(Color("Inverted").opacity(0.3))
                 .frame(width: 2*iconRadius, height: 2*iconRadius, alignment: .center)
                 .padding(.trailing, 0)
                 .padding([.leading, .top, .bottom], spacing/2)
