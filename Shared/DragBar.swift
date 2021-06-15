@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/**
+ The horizontal bar containing dividers for the user to adjust column widths.
+ */
 struct DragBar: View {
     // ColorScheme allows to change UI features based on light or dark mode
     @Environment(\.colorScheme) var colorScheme

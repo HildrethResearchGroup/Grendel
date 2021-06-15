@@ -32,7 +32,7 @@ class Tree: Codable, ObservableObject {
         try container.encode(rootNode, forKey: .rootNode)
     }
     
-    func updateLevelWidths(level: Int, width: CGFloat){
+    func updateLevelWidths(level: Int, width: CGFloat) {
         rootNode.updateLevelWidths(level: level, width: width)
     }
     
@@ -45,7 +45,7 @@ class Tree: Codable, ObservableObject {
      */
     func indent(node: Node<String>) {
         let nodesIndex = node.parent!.indexOfChild(node)
-        // If there isn't a node above the this node then indenting can't happen
+        // If there isn't a node above the this node, then indenting can't happen
         if(nodesIndex! == 0) {
             print("Alert, couldn't indent")
             // TODO: Alert of unable to indent

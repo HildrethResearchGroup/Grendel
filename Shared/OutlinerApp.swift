@@ -122,6 +122,7 @@ struct OutlinerApp: App {
         }
     }
 }
+
 /**
  Helper function for finding a safe place to store the file. In production, it is intended to save to the user's documents folder.
  

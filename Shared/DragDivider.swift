@@ -7,8 +7,10 @@
 
 import SwiftUI
 
+/**
+ Movable vertical bar that allows the user to adjust column widths.
+ */
 struct DragDivider : View {
-    
     // viewState records where the divider has been moved to
     @State private var viewState = CGSize.zero
     // colorScheme allows for UI light and dark differentiation

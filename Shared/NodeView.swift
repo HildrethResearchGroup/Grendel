@@ -16,7 +16,6 @@ extension NSTextView {
             backgroundColor = .clear // << here clear
             drawsBackground = true
         }
-        
     }
 }
 
@@ -28,7 +27,6 @@ struct NodeView: View {
     var spacing: CGFloat
     var iconRadius: CGFloat
     
-
     init(node: Node<String>, radius: CGFloat = 5, spacing: CGFloat = 20) {
         self.node = node
         //self.width = node.width
@@ -37,7 +35,6 @@ struct NodeView: View {
         self.iconRadius = (spacing/2 + 17.0/2)/2
         self.ts = node.textSettings
     }
-    
     
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
@@ -71,9 +68,7 @@ struct NodeView: View {
                 .padding([.trailing, .bottom, .top], spacing/2)
         }
         .frame(maxWidth: node.width - spacing, idealHeight: 0)
-        .background(
-            createBackgroundRectangle()
-        )
+        .background(createBackgroundRectangle())
         .padding(.trailing, spacing)
     }
     

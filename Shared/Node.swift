@@ -41,20 +41,18 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
         self.textSettings = textSettings
         self.childrenShown = childrenShown
         self.width = width
-        
     }
     
-    func updateLevelWidths(level: Int, width: CGFloat){
-        if(depth == level){
+    func updateLevelWidths(level: Int, width: CGFloat) {
+        if(depth == level) {
             self.width = width
-        }else{
-            for node in children{
+        } else {
+            for node in children {
                 node.updateLevelWidths(level: level, width: width)
             }
         }
     }
     
-
     func getLevelWidths(level: Int) -> CGFloat {
         var size: CGFloat = 0.0
         
@@ -244,11 +242,13 @@ class Node<Content: Codable>: Identifiable, Codable, ObservableObject {
             highlightColor = color
         }
 
-        // TODO: Reset font settings function.
+        /**
+         Removes all formatting and reverts the text to the default colors.
+         */
         func reset() {
             weight = .regular
             isItalicized = false
-            foregroundColor = .black
+            foregroundColor = Color("Inverted")
             highlightColor = nil
             font = .system(.body)
         }
