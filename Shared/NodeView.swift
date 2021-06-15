@@ -108,7 +108,7 @@ extension View {
 }
 
 /**
- Draws a triangle or circle icon by each node depending if it has circle or not.
+ Draws a triangle or circle icon by each node depending if it has children or not.
  */
 struct NodeIcon: Shape {
     let hasChildren: Bool
